@@ -11,6 +11,7 @@ Repository map:
 - `data/raw/SRC-n/` — raw archive, one directory per source in the spec's registry; fetched files are stored verbatim before parsing and never deleted
 - `data/verified/` — hand-verified figures with provenance, used until a parser replaces them
 - `site/` — dependency-free static dashboard; deployed to GitHub Pages by `.github/workflows/build-deploy.yml`
+- `docs/kickoffs/` — per-branch kickoff/spec files (first commit of every feature branch, per Branch Workflow below)
 
 Locked decisions (2026-08-09): v1 scope national+annual · fully static site on GitHub Pages, no server · hybrid materialisation (canonical materialised + CI-checked, filtered views derived) · MERIT capture deferred · raw archive moves to a separate data repo when it outgrows this one.
 

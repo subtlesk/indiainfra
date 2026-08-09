@@ -15,6 +15,7 @@ from . import parse_cea
 
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "site" / "data" / "chain.json"
+OUT_SERIES = ROOT / "site" / "data" / "series.json"
 
 FY24_HOURS = 8784  # FY2023-24 (Apr 2023 - Mar 2024) contains 29 Feb 2024
 
@@ -90,6 +91,40 @@ def build() -> dict:
     }
 
 
+def build_series() -> dict:
+    """Historical mode-wise series for the time-series view (Growth Book)."""
+    cap = parse_cea.capacity_series()
+    gen = parse_cea.generation_series()
+    for rows in (cap, gen):
+        for r in rows:
+            # CEA's own printed totals for 1950-1969 generation exclude gas and
+            # diesel. Publish the residual; never force the identity.
+            r["residual"] = round(r["total"] - (r["thermal"] + r["hydro"] + r["nuclear"] + r["res"]), 1)
+    return {
+        "source": "SRC-1",
+        "source_file": "data/raw/SRC-1/growth-book/Growth_Book_2024.pdf",
+        "note": "Utilities only (captive/bypass excluded). Rows before 1992 are plan-end years - irregular spacing. 'residual' = printed CEA total minus sum of modes; non-zero 1950-1969 because CEA's printed generation totals there exclude gas and diesel.",
+        "capacity_MW": cap,
+        "generation_GWh": gen,
+    }
+
+
+def check_series_invariants(series: dict) -> list[str]:
+    errors = []
+    for key in ("capacity_MW", "generation_GWh"):
+        for r in series[key]:
+            if abs(r["residual"]) > r["total"] * 0.05:
+                errors.append(f"{key} {r['year']}: residual {r['residual']} exceeds 5% of total")
+            if r["year"] >= 1970 and abs(r["residual"]) > max(3, r["total"] * 2e-4):
+                errors.append(f"{key} {r['year']}: unexplained residual {r['residual']} after 1970")
+    # FY24 endpoints must agree with the chain's independently parsed values.
+    if abs(series["capacity_MW"][-1]["total"] - 441_969.5) > 2:
+        errors.append("capacity series 2024 endpoint disagrees with IC xlsx")
+    if abs(series["generation_GWh"][-1]["total"] - 1_734_375) > 2:
+        errors.append("generation series 2024 endpoint disagrees with chain S4")
+    return errors
+
+
 def check_invariants(chain: dict) -> list[str]:
     errors = []
     by_id = {s["id"]: s for s in chain["stages"]}
@@ -126,7 +161,8 @@ def check_invariants(chain: dict) -> list[str]:
 
 def main() -> int:
     chain = build()
-    errors = check_invariants(chain)
+    series = build_series()
+    errors = check_invariants(chain) + check_series_invariants(series)
     if errors:
         print("INVARIANT FAILURES:")
         for e in errors:
@@ -134,8 +170,11 @@ def main() -> int:
         return 1
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps(chain, indent=2))
+    OUT_SERIES.write_text(json.dumps(series, indent=2))
     populated = sum(1 for s in chain["stages"] if s["status"] == "populated")
+    n = len(series["capacity_MW"])
     print(f"wrote {OUT.relative_to(ROOT)} - {populated}/9 stages populated, all invariants pass")
+    print(f"wrote {OUT_SERIES.relative_to(ROOT)} - {n} rows per series, 1947-2024")
     return 0
 
 

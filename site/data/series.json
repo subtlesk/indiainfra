@@ -1,0 +1,441 @@
+{
+  "source": "SRC-1",
+  "source_file": "data/raw/SRC-1/growth-book/Growth_Book_2024.pdf",
+  "note": "Utilities only (captive/bypass excluded). Rows before 1992 are plan-end years - irregular spacing. 'residual' = printed CEA total minus sum of modes; non-zero 1950-1969 because CEA's printed generation totals there exclude gas and diesel.",
+  "capacity_MW": [
+    {
+      "year": 1947,
+      "thermal": 854.0,
+      "hydro": 508.0,
+      "nuclear": 0.0,
+      "res": 0.0,
+      "total": 1362.0,
+      "residual": 0.0
+    },
+    {
+      "year": 1950,
+      "thermal": 1153.0,
+      "hydro": 560.0,
+      "nuclear": 0.0,
+      "res": 0.0,
+      "total": 1713.0,
+      "residual": 0.0
+    },
+    {
+      "year": 1956,
+      "thermal": 1825.0,
+      "hydro": 1061.0,
+      "nuclear": 0.0,
+      "res": 0.0,
+      "total": 2886.0,
+      "residual": 0.0
+    },
+    {
+      "year": 1961,
+      "thermal": 2736.0,
+      "hydro": 1917.0,
+      "nuclear": 0.0,
+      "res": 0.0,
+      "total": 4653.0,
+      "residual": 0.0
+    },
+    {
+      "year": 1966,
+      "thermal": 4903.0,
+      "hydro": 4124.0,
+      "nuclear": 0.0,
+      "res": 0.0,
+      "total": 9027.0,
+      "residual": 0.0
+    },
+    {
+      "year": 1969,
+      "thermal": 7050.0,
+      "hydro": 5907.0,
+      "nuclear": 0.0,
+      "res": 0.0,
+      "total": 12957.0,
+      "residual": 0.0
+    },
+    {
+      "year": 1974,
+      "thermal": 9058.0,
+      "hydro": 6966.0,
+      "nuclear": 640.0,
+      "res": 0.0,
+      "total": 16664.0,
+      "residual": 0.0
+    },
+    {
+      "year": 1979,
+      "thermal": 15207.0,
+      "hydro": 10833.0,
+      "nuclear": 640.0,
+      "res": 0.0,
+      "total": 26680.0,
+      "residual": 0.0
+    },
+    {
+      "year": 1980,
+      "thermal": 16424.0,
+      "hydro": 11384.0,
+      "nuclear": 640.0,
+      "res": 0.0,
+      "total": 28448.0,
+      "residual": 0.0
+    },
+    {
+      "year": 1985,
+      "thermal": 27030.0,
+      "hydro": 14460.0,
+      "nuclear": 1095.0,
+      "res": 0.0,
+      "total": 42585.0,
+      "residual": 0.0
+    },
+    {
+      "year": 1990,
+      "thermal": 43745.0,
+      "hydro": 18308.0,
+      "nuclear": 1565.0,
+      "res": 18.0,
+      "total": 63636.0,
+      "residual": 0.0
+    },
+    {
+      "year": 1992,
+      "thermal": 48054.0,
+      "hydro": 19194.0,
+      "nuclear": 1785.0,
+      "res": 32.0,
+      "total": 69065.0,
+      "residual": 0.0
+    },
+    {
+      "year": 1997,
+      "thermal": 61010.0,
+      "hydro": 21658.0,
+      "nuclear": 2225.0,
+      "res": 902.0,
+      "total": 85795.0,
+      "residual": 0.0
+    },
+    {
+      "year": 2002,
+      "thermal": 74429.0,
+      "hydro": 26269.0,
+      "nuclear": 2720.0,
+      "res": 1628.0,
+      "total": 105046.0,
+      "residual": 0.0
+    },
+    {
+      "year": 2007,
+      "thermal": 86015.0,
+      "hydro": 34654.0,
+      "nuclear": 3900.0,
+      "res": 7760.0,
+      "total": 132329.0,
+      "residual": 0.0
+    },
+    {
+      "year": 2012,
+      "thermal": 131603.0,
+      "hydro": 38990.0,
+      "nuclear": 4780.0,
+      "res": 24504.0,
+      "total": 199877.0,
+      "residual": 0.0
+    },
+    {
+      "year": 2017,
+      "thermal": 218330.0,
+      "hydro": 44478.0,
+      "nuclear": 6780.0,
+      "res": 58558.0,
+      "total": 328146.0,
+      "residual": 0.0
+    },
+    {
+      "year": 2018,
+      "thermal": 222907.0,
+      "hydro": 45293.0,
+      "nuclear": 6780.0,
+      "res": 70651.0,
+      "total": 345631.0,
+      "residual": 0.0
+    },
+    {
+      "year": 2019,
+      "thermal": 226279.0,
+      "hydro": 45399.0,
+      "nuclear": 6780.0,
+      "res": 79412.0,
+      "total": 357871.0,
+      "residual": 1.0
+    },
+    {
+      "year": 2020,
+      "thermal": 230600.0,
+      "hydro": 45699.0,
+      "nuclear": 6780.0,
+      "res": 88255.0,
+      "total": 371334.0,
+      "residual": 0.0
+    },
+    {
+      "year": 2021,
+      "thermal": 234729.0,
+      "hydro": 46209.0,
+      "nuclear": 6780.0,
+      "res": 95803.0,
+      "total": 383521.0,
+      "residual": 0.0
+    },
+    {
+      "year": 2022,
+      "thermal": 236109.0,
+      "hydro": 46723.0,
+      "nuclear": 6780.0,
+      "res": 109885.0,
+      "total": 399497.0,
+      "residual": 0.0
+    },
+    {
+      "year": 2023,
+      "thermal": 237269.0,
+      "hydro": 46850.0,
+      "nuclear": 6780.0,
+      "res": 125160.0,
+      "total": 416059.0,
+      "residual": 0.0
+    },
+    {
+      "year": 2024,
+      "thermal": 243217.0,
+      "hydro": 46928.0,
+      "nuclear": 8180.0,
+      "res": 143645.0,
+      "total": 441970.0,
+      "residual": 0.0
+    }
+  ],
+  "generation_GWh": [
+    {
+      "year": 1947,
+      "thermal": 1877.0,
+      "hydro": 2195.0,
+      "nuclear": 0.0,
+      "res": 0.0,
+      "total": 4073.0,
+      "residual": 1.0
+    },
+    {
+      "year": 1950,
+      "thermal": 2787.0,
+      "hydro": 2519.0,
+      "nuclear": 0.0,
+      "res": 0.0,
+      "total": 5106.0,
+      "residual": -200.0
+    },
+    {
+      "year": 1956,
+      "thermal": 5600.0,
+      "hydro": 4295.0,
+      "nuclear": 0.0,
+      "res": 0.0,
+      "total": 9662.0,
+      "residual": -233.0
+    },
+    {
+      "year": 1961,
+      "thermal": 9468.0,
+      "hydro": 7837.0,
+      "nuclear": 0.0,
+      "res": 0.0,
+      "total": 16937.0,
+      "residual": -368.0
+    },
+    {
+      "year": 1966,
+      "thermal": 18158.0,
+      "hydro": 15225.0,
+      "nuclear": 0.0,
+      "res": 0.0,
+      "total": 32990.0,
+      "residual": -393.0
+    },
+    {
+      "year": 1969,
+      "thermal": 27029.0,
+      "hydro": 20723.0,
+      "nuclear": 0.0,
+      "res": 0.0,
+      "total": 47434.0,
+      "residual": -318.0
+    },
+    {
+      "year": 1974,
+      "thermal": 35321.0,
+      "hydro": 28972.0,
+      "nuclear": 2396.0,
+      "res": 0.0,
+      "total": 66689.0,
+      "residual": 0.0
+    },
+    {
+      "year": 1979,
+      "thermal": 52594.0,
+      "hydro": 47159.0,
+      "nuclear": 2770.0,
+      "res": 0.0,
+      "total": 102523.0,
+      "residual": 0.0
+    },
+    {
+      "year": 1980,
+      "thermal": 56273.0,
+      "hydro": 45478.0,
+      "nuclear": 2876.0,
+      "res": 0.0,
+      "total": 104627.0,
+      "residual": 0.0
+    },
+    {
+      "year": 1985,
+      "thermal": 98836.0,
+      "hydro": 53948.0,
+      "nuclear": 4075.0,
+      "res": 0.0,
+      "total": 156859.0,
+      "residual": 0.0
+    },
+    {
+      "year": 1990,
+      "thermal": 178690.0,
+      "hydro": 62116.0,
+      "nuclear": 4625.0,
+      "res": 6.0,
+      "total": 245438.0,
+      "residual": 1.0
+    },
+    {
+      "year": 1992,
+      "thermal": 208708.0,
+      "hydro": 72757.0,
+      "nuclear": 5525.0,
+      "res": 38.0,
+      "total": 287029.0,
+      "residual": 1.0
+    },
+    {
+      "year": 1997,
+      "thermal": 317042.0,
+      "hydro": 68901.0,
+      "nuclear": 9071.0,
+      "res": 876.0,
+      "total": 395889.0,
+      "residual": -1.0
+    },
+    {
+      "year": 2002,
+      "thermal": 422300.0,
+      "hydro": 73579.0,
+      "nuclear": 19475.0,
+      "res": 2085.0,
+      "total": 517439.0,
+      "residual": 0.0
+    },
+    {
+      "year": 2007,
+      "thermal": 528490.0,
+      "hydro": 113502.0,
+      "nuclear": 18802.0,
+      "res": 9860.0,
+      "total": 670654.0,
+      "residual": 0.0
+    },
+    {
+      "year": 2012,
+      "thermal": 708427.0,
+      "hydro": 130511.0,
+      "nuclear": 32287.0,
+      "res": 51226.0,
+      "total": 922451.0,
+      "residual": 0.0
+    },
+    {
+      "year": 2017,
+      "thermal": 993516.0,
+      "hydro": 122378.0,
+      "nuclear": 37916.0,
+      "res": 81548.0,
+      "total": 1235358.0,
+      "residual": 0.0
+    },
+    {
+      "year": 2018,
+      "thermal": 1037146.0,
+      "hydro": 126123.0,
+      "nuclear": 38346.0,
+      "res": 101839.0,
+      "total": 1303455.0,
+      "residual": 1.0
+    },
+    {
+      "year": 2019,
+      "thermal": 1072314.0,
+      "hydro": 134894.0,
+      "nuclear": 37813.0,
+      "res": 126759.0,
+      "total": 1371779.0,
+      "residual": -1.0
+    },
+    {
+      "year": 2020,
+      "thermal": 1042838.0,
+      "hydro": 155769.0,
+      "nuclear": 46472.0,
+      "res": 138337.0,
+      "total": 1383417.0,
+      "residual": 1.0
+    },
+    {
+      "year": 2021,
+      "thermal": 1032611.0,
+      "hydro": 150300.0,
+      "nuclear": 43029.0,
+      "res": 147248.0,
+      "total": 1373187.0,
+      "residual": -1.0
+    },
+    {
+      "year": 2022,
+      "thermal": 1114811.0,
+      "hydro": 151627.0,
+      "nuclear": 47112.0,
+      "res": 170912.0,
+      "total": 1484463.0,
+      "residual": 1.0
+    },
+    {
+      "year": 2023,
+      "thermal": 1206390.0,
+      "hydro": 162099.0,
+      "nuclear": 45861.0,
+      "res": 203555.0,
+      "total": 1617904.0,
+      "residual": -1.0
+    },
+    {
+      "year": 2024,
+      "thermal": 1326549.0,
+      "hydro": 134054.0,
+      "nuclear": 47937.0,
+      "res": 225835.0,
+      "total": 1734375.0,
+      "residual": 0.0
+    }
+  ]
+}
