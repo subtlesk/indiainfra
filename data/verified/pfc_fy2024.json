@@ -1,0 +1,10 @@
+{
+  "_provenance": "PFC 'Report on Performance of Power Utilities 2023-24' (65 of 72 discoms). Figures verified against the published report and secondary confirmations during source research on 2026-08-09. Replace with parsed values once the PFC PDF parser exists (spec task: upgrade to parsed provenance).",
+  "period": "FY2023-24",
+  "atc_loss_pct": 16.12,
+  "billing_efficiency_pct": 86.91,
+  "collection_efficiency_pct": 96.51,
+  "source": "SRC-5",
+  "grade": "A",
+  "hand_verified": true
+}

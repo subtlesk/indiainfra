@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>India Electricity Dashboard — the chain</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1>India Electricity Dashboard</h1>
+  <p class="tagline">From what gets announced to what gets delivered — every stage, every gap, honestly.</p>
+  <p class="period" id="period"></p>
+</header>
+
+<main>
+  <section id="chain" aria-label="The electricity chain"></section>
+
+  <section class="explain">
+    <h2>How to read this</h2>
+    <p>Each box is a <strong>stage</strong> of India's electricity system. The chain runs from
+    capacity that exists on paper (megawatts) to electricity actually generated, delivered,
+    paid for, and received (units of energy). <strong>Grey stages are not populated yet</strong> —
+    either because the parser is still to be written, or because India does not publish the
+    data. This dashboard shows that difference instead of hiding it.</p>
+    <p>Stages 0–3 are measured in <strong>power (MW)</strong> — what could be produced at an instant.
+    Stages 4–8 are measured in <strong>energy (GWh)</strong> — what actually was produced over the year.
+    They are not interchangeable, and the bridge between them is the single most
+    misunderstood step in the sector.</p>
+  </section>
+
+  <section id="notes" class="explain">
+    <h2>Provenance</h2>
+    <ul id="provenance"></ul>
+    <p class="fine">Built per <a href="https://github.com/subtlesk/indiainfra">chain-specification-v0.2</a>.
+    Every number traces to an archived primary-source file; invariant checks run in CI and
+    a violation fails the build.</p>
+  </section>
+</main>
+
+<script src="app.js"></script>
+</body>
+</html>
