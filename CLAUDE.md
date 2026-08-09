@@ -2,9 +2,17 @@
 
 ## What This Project Is
 
-An honest, drill-down dashboard of India's infrastructure, starting with electricity. The structural spine is the **chain specification** ([chain-specification-v0.1.md](chain-specification-v0.1.md)): every headline number sits at a stage, every gap between stages has a name, a cause decomposition, and its own data source. The UI reads the chain; it does not hard-code it.
+An honest, drill-down dashboard of India's infrastructure, starting with electricity. The structural spine is the **chain specification** ([chain-specification-v0.2.md](chain-specification-v0.2.md), v0.1 kept for history): every headline number sits at a stage, every edge between stages has a name, a kind, a decomposition, and its own data source. The UI reads the chain; it does not hard-code it.
 
-The project is currently in **specification phase** — artifacts before code.
+Status: **walking skeleton** — FY2023-24 national annual chain, stages S1/S4/S7 + captive bypass populated from parsed primary sources, remaining stages honestly greyed.
+
+Repository map:
+- `pipeline/` — Python: archive-first fetchers, parsers for archived primary sources, `build.py` (assembles `site/data/chain.json`, enforces invariants; violation fails CI)
+- `data/raw/SRC-n/` — raw archive, one directory per source in the spec's registry; fetched files are stored verbatim before parsing and never deleted
+- `data/verified/` — hand-verified figures with provenance, used until a parser replaces them
+- `site/` — dependency-free static dashboard; deployed to GitHub Pages by `.github/workflows/build-deploy.yml`
+
+Locked decisions (2026-08-09): v1 scope national+annual · fully static site on GitHub Pages, no server · hybrid materialisation (canonical materialised + CI-checked, filtered views derived) · MERIT capture deferred · raw archive moves to a separate data repo when it outgrows this one.
 
 ---
 

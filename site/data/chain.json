@@ -1,0 +1,149 @@
+{
+  "title": "India Electricity Dashboard - walking skeleton",
+  "spec": "chain-specification-v0.2.md",
+  "period": "FY2023-24",
+  "period_basis": "fiscal year (April-March)",
+  "scope": "national, annual",
+  "stages": [
+    {
+      "id": "S0",
+      "name": "Pipeline",
+      "unit": "MW",
+      "status": "pending",
+      "note": "Needs GEM + PARIVESH + CEA Broad Status fusion (fuzzy-match spike first)."
+    },
+    {
+      "id": "S1",
+      "name": "Installed capacity",
+      "unit": "MW",
+      "status": "populated",
+      "value": 441969.5,
+      "breakdown": {
+        "coal": 210969.5,
+        "lignite": 6620,
+        "gas": 25038.2,
+        "diesel": 589.2,
+        "nuclear": 8180,
+        "hydro_large": 46928.2,
+        "res_incl_small_hydro": 143644.5
+      },
+      "grade": "A",
+      "as_of": "2024-03-31",
+      "source": "SRC-1",
+      "source_file": "data\\raw\\SRC-1\\2024-03\\IC_Mar_2024_allocation_wise.xlsx"
+    },
+    {
+      "id": "S2",
+      "name": "Available capacity",
+      "unit": "MW",
+      "status": "pending",
+      "note": "Needs NPP daily outage parsing (PDF at scale)."
+    },
+    {
+      "id": "S3",
+      "name": "Dispatched",
+      "unit": "MW",
+      "status": "pending",
+      "note": "Needs Grid-India PSP archive parsing (FY2013-14 onward)."
+    },
+    {
+      "id": "S4",
+      "name": "Gross generation",
+      "unit": "GWh",
+      "status": "populated",
+      "value": 1734375.0,
+      "breakdown": {
+        "coal_lignite": 1294852.0,
+        "gas": 31296.0,
+        "diesel": 401.0,
+        "hydro_large": 134054.0,
+        "nuclear": 47937.0,
+        "res": 225835.0
+      },
+      "grade": "A",
+      "period": "FY2023-24",
+      "source": "SRC-1",
+      "source_file": "data\\raw\\SRC-1\\growth-book\\Growth_Book_2024.pdf"
+    },
+    {
+      "id": "S5",
+      "name": "Net generation",
+      "unit": "GWh",
+      "status": "pending",
+      "note": "Derived stage: needs auxiliary-consumption actuals from CEA General Review. Norm bands (coal ~5.25-8.5%) are known; actuals are not assumed."
+    },
+    {
+      "id": "S6",
+      "name": "Delivered to distribution",
+      "unit": "GWh",
+      "status": "pending",
+      "note": "Needs NLDC applicable-ISTS-loss series; commercial vs physical basis must be labeled."
+    },
+    {
+      "id": "S7",
+      "name": "Billed & collected",
+      "unit": "%",
+      "status": "populated",
+      "metrics": {
+        "atc_loss_pct": 16.12,
+        "billing_efficiency_pct": 86.91,
+        "collection_efficiency_pct": 96.51
+      },
+      "grade": "A",
+      "period": "FY2023-24",
+      "source": "SRC-5",
+      "hand_verified": true
+    },
+    {
+      "id": "S8",
+      "name": "Service received",
+      "unit": "mixed",
+      "status": "pending",
+      "note": "Weakest stage: no live public supply-quality feed (ESMI discontinued). Annual PIB statements only."
+    }
+  ],
+  "edges": [
+    {
+      "kind": "bridge",
+      "from": "S1",
+      "to": "S4",
+      "status": "partial",
+      "factor": 0.4467,
+      "factor_label": "Implied fleet utilisation vs INSTALLED capacity (not dispatched \u2014 S3 has no parser yet). Denominator choice changes this number; that is pitfall P-06, shown rather than hidden.",
+      "citizen_note": "Megawatts measure what could be produced at any instant; units of electricity measure what actually was - a solar farm and a coal plant of the same size produce very different amounts over a year."
+    },
+    {
+      "kind": "side_flow",
+      "from": "bypass",
+      "to": "S8",
+      "status": "populated",
+      "gap_value": 214581.0,
+      "gap_unit": "GWh",
+      "provisional": true,
+      "grade": "B",
+      "source": "SRC-1",
+      "source_file": "data\\raw\\SRC-1\\growth-book\\Growth_Book_2024.pdf",
+      "label": "Captive generation (plants >=0.5 MW) - bypasses S6-S7",
+      "citizen_note": "A large slice of India's electricity never touches the public grid's books - factories generating for themselves, rooftop solar, direct purchases - which is why national totals and your electricity bill never quite reconcile."
+    },
+    {
+      "kind": "gap",
+      "from": "S6",
+      "to": "S7",
+      "status": "partial",
+      "metrics_only": true,
+      "atc_identity_check": {
+        "lhs_atc_pct": 16.12,
+        "rhs_from_efficiencies_pct": 16.12
+      },
+      "citizen_note": "Of the electricity handed to distribution companies, a share is lost in local wires, never billed, or billed but never paid for."
+    },
+    {
+      "kind": "feedback",
+      "from": "S7",
+      "to": "S3",
+      "status": "pending",
+      "citizen_note": "When distribution companies cannot collect what they bill, they cannot pay power plants - so they buy less, and plants that could run sit idle."
+    }
+  ]
+}
