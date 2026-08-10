@@ -7,8 +7,10 @@
 <meta name="description" content="From the megawatts announced to the power that reaches your plug — India's electricity, one honest chain, built from the government's own records.">
 <link rel="stylesheet" href="fonts.css">
 <link rel="stylesheet" href="style.css">
+<script>if (localStorage.theme === "dark" || new URLSearchParams(location.search).get("theme") === "dark") document.documentElement.dataset.theme = "dark";</script>
 </head>
 <body>
+<button id="themeBtn" aria-label="Switch between light and dark mode" title="Light / dark">☾</button>
 <div class="glow glow-a" aria-hidden="true"></div>
 <div class="glow glow-b" aria-hidden="true"></div>
 

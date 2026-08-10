@@ -437,5 +437,345 @@
       "total": 1734375.0,
       "residual": 0.0
     }
+  ],
+  "per_capita_kWh": [
+    {
+      "year": 1947,
+      "kwh": 16.0
+    },
+    {
+      "year": 1950,
+      "kwh": 18.0
+    },
+    {
+      "year": 1956,
+      "kwh": 31.0
+    },
+    {
+      "year": 1961,
+      "kwh": 46.0
+    },
+    {
+      "year": 1966,
+      "kwh": 74.0
+    },
+    {
+      "year": 1969,
+      "kwh": 98.0
+    },
+    {
+      "year": 1974,
+      "kwh": 126.0
+    },
+    {
+      "year": 1979,
+      "kwh": 172.0
+    },
+    {
+      "year": 1980,
+      "kwh": 172.0
+    },
+    {
+      "year": 1985,
+      "kwh": 229.0
+    },
+    {
+      "year": 1990,
+      "kwh": 329.0
+    },
+    {
+      "year": 1992,
+      "kwh": 348.0
+    },
+    {
+      "year": 1997,
+      "kwh": 465.0
+    },
+    {
+      "year": 2002,
+      "kwh": 559.0
+    },
+    {
+      "year": 2007,
+      "kwh": 672.0
+    },
+    {
+      "year": 2012,
+      "kwh": 884.0
+    },
+    {
+      "year": 2017,
+      "kwh": 1122.0
+    },
+    {
+      "year": 2018,
+      "kwh": 1149.0
+    },
+    {
+      "year": 2019,
+      "kwh": 1181.0
+    },
+    {
+      "year": 2020,
+      "kwh": 1208.0
+    },
+    {
+      "year": 2021,
+      "kwh": 1161.0
+    },
+    {
+      "year": 2022,
+      "kwh": 1255.0
+    },
+    {
+      "year": 2023,
+      "kwh": 1331.0
+    },
+    {
+      "year": 2024,
+      "kwh": 1395.0
+    }
+  ],
+  "consumption_GWh": [
+    {
+      "year": 1947,
+      "domestic": 423.0,
+      "commercial": 178.0,
+      "industrial": 2960.0,
+      "traction": 277.0,
+      "agriculture": 125.0,
+      "misc": 219.0,
+      "total": 4182.0
+    },
+    {
+      "year": 1950,
+      "domestic": 525.0,
+      "commercial": 309.0,
+      "industrial": 4057.0,
+      "traction": 308.0,
+      "agriculture": 162.0,
+      "misc": 249.0,
+      "total": 5610.0
+    },
+    {
+      "year": 1956,
+      "domestic": 934.0,
+      "commercial": 546.0,
+      "industrial": 7514.0,
+      "traction": 405.0,
+      "agriculture": 316.0,
+      "misc": 435.0,
+      "total": 10150.0
+    },
+    {
+      "year": 1961,
+      "domestic": 1492.0,
+      "commercial": 848.0,
+      "industrial": 12547.0,
+      "traction": 454.0,
+      "agriculture": 833.0,
+      "misc": 630.0,
+      "total": 16804.0
+    },
+    {
+      "year": 1966,
+      "domestic": 2355.0,
+      "commercial": 1650.0,
+      "industrial": 22596.0,
+      "traction": 1057.0,
+      "agriculture": 1892.0,
+      "misc": 905.0,
+      "total": 30455.0
+    },
+    {
+      "year": 1969,
+      "domestic": 3184.0,
+      "commercial": 2126.0,
+      "industrial": 29931.0,
+      "traction": 1247.0,
+      "agriculture": 3465.0,
+      "misc": 1439.0,
+      "total": 41392.0
+    },
+    {
+      "year": 1974,
+      "domestic": 4645.0,
+      "commercial": 2988.0,
+      "industrial": 37791.0,
+      "traction": 1531.0,
+      "agriculture": 6310.0,
+      "misc": 2292.0,
+      "total": 55557.0
+    },
+    {
+      "year": 1979,
+      "domestic": 7576.0,
+      "commercial": 4330.0,
+      "industrial": 54440.0,
+      "traction": 2186.0,
+      "agriculture": 12028.0,
+      "misc": 3445.0,
+      "total": 84005.0
+    },
+    {
+      "year": 1980,
+      "domestic": 8402.0,
+      "commercial": 4657.0,
+      "industrial": 53206.0,
+      "traction": 2301.0,
+      "agriculture": 13452.0,
+      "misc": 3316.0,
+      "total": 85334.0
+    },
+    {
+      "year": 1985,
+      "domestic": 15506.0,
+      "commercial": 6937.0,
+      "industrial": 73520.0,
+      "traction": 2880.0,
+      "agriculture": 20961.0,
+      "misc": 4765.0,
+      "total": 124569.0
+    },
+    {
+      "year": 1990,
+      "domestic": 29577.0,
+      "commercial": 9548.0,
+      "industrial": 100373.0,
+      "traction": 4070.0,
+      "agriculture": 44056.0,
+      "misc": 7474.0,
+      "total": 195098.0
+    },
+    {
+      "year": 1992,
+      "domestic": 35854.0,
+      "commercial": 12032.0,
+      "industrial": 110844.0,
+      "traction": 4520.0,
+      "agriculture": 58557.0,
+      "misc": 9394.0,
+      "total": 231201.0
+    },
+    {
+      "year": 1997,
+      "domestic": 55267.0,
+      "commercial": 17519.0,
+      "industrial": 139253.0,
+      "traction": 6594.0,
+      "agriculture": 84019.0,
+      "misc": 12642.0,
+      "total": 315294.0
+    },
+    {
+      "year": 2002,
+      "domestic": 79694.0,
+      "commercial": 24139.0,
+      "industrial": 159507.0,
+      "traction": 8106.0,
+      "agriculture": 81673.0,
+      "misc": 21551.0,
+      "total": 374670.0
+    },
+    {
+      "year": 2007,
+      "domestic": 111002.0,
+      "commercial": 40220.0,
+      "industrial": 241216.0,
+      "traction": 10800.0,
+      "agriculture": 99023.0,
+      "misc": 23411.0,
+      "total": 525672.0
+    },
+    {
+      "year": 2012,
+      "domestic": 171104.0,
+      "commercial": 65381.0,
+      "industrial": 352291.0,
+      "traction": 14206.0,
+      "agriculture": 140960.0,
+      "misc": 41252.0,
+      "total": 785194.0
+    },
+    {
+      "year": 2017,
+      "domestic": 255826.0,
+      "commercial": 89825.0,
+      "industrial": 440206.0,
+      "traction": 15683.0,
+      "agriculture": 191151.0,
+      "misc": 68493.0,
+      "total": 1061183.0
+    },
+    {
+      "year": 2018,
+      "domestic": 273545.0,
+      "commercial": 93755.0,
+      "industrial": 468613.0,
+      "traction": 17433.0,
+      "agriculture": 199247.0,
+      "misc": 70834.0,
+      "total": 1123427.0
+    },
+    {
+      "year": 2019,
+      "domestic": 288243.0,
+      "commercial": 98228.0,
+      "industrial": 519196.0,
+      "traction": 18837.0,
+      "agriculture": 213409.0,
+      "misc": 72058.0,
+      "total": 1209972.0
+    },
+    {
+      "year": 2020,
+      "domestic": 308745.0,
+      "commercial": 106047.0,
+      "industrial": 532820.0,
+      "traction": 19148.0,
+      "agriculture": 211295.0,
+      "misc": 70031.0,
+      "total": 1248086.0
+    },
+    {
+      "year": 2021,
+      "domestic": 330809.0,
+      "commercial": 86950.0,
+      "industrial": 508776.0,
+      "traction": 14668.0,
+      "agriculture": 221303.0,
+      "misc": 67701.0,
+      "total": 1230208.0
+    },
+    {
+      "year": 2022,
+      "domestic": 339780.0,
+      "commercial": 97121.0,
+      "industrial": 556481.0,
+      "traction": 21935.0,
+      "agriculture": 228451.0,
+      "misc": 72996.0,
+      "total": 1316765.0
+    },
+    {
+      "year": 2023,
+      "domestic": 353156.0,
+      "commercial": 117231.0,
+      "industrial": 593895.0,
+      "traction": 30028.0,
+      "agriculture": 243852.0,
+      "misc": 102149.0,
+      "total": 1440311.0
+    },
+    {
+      "year": 2024,
+      "domestic": 375000.0,
+      "commercial": 125000.0,
+      "industrial": 645000.0,
+      "traction": 33000.0,
+      "agriculture": 255000.0,
+      "misc": 110000.0,
+      "total": 1543000.0
+    }
   ]
 }

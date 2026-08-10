@@ -33,4 +33,4 @@ Then open `site/index.html` via any static server.
 
 Walking skeleton: FY2023-24, national, annual. Stages S1, S4, S7 and the captive bypass are populated from parsed primary sources; the rest are shown greyed as "not yet populated" — by design, the dashboard shows what isn't measured instead of hiding it.
 
-Plus **the long view**: mode-wise installed capacity and gross generation, 1947→2024, as line charts parsed from CEA's Growth Book historical tables (with CEA's own non-summing early totals published as residuals rather than hidden).
+Plus **the long view**: mode-wise installed capacity, gross generation, sector-wise consumption ("who uses it"), and per-capita consumption, 1947→2024, as line charts parsed from CEA's Growth Book historical tables (with CEA's own non-summing early totals published as residuals rather than hidden). S8 is partially populated (per-capita); light theme is default with a visible dark-mode toggle.

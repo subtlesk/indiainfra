@@ -19,7 +19,7 @@ const COPY = {
   S1: { title: "What's built", story: "Every power station connected to the grid — coal to rooftop-scale solar — at the end of March 2024." },
   S2: { title: "What's ready to run", story: "Built isn't always available: maintenance, breakdowns and fuel shortages keep part of the fleet offline every day." },
   S3: { title: "What's called on", story: "Ready plants run only when someone buys their power — and buyers who can't pay ask for less than people need." },
-  S4: { title: "What was generated", story: "All the electricity India's utility power stations actually produced over the year." },
+  S4: { title: "What was generated", story: "All the electricity India's utility power stations actually produced over the year — measured in 'units', the same units your electricity meter counts (1 unit = 1 kWh; a BU is a billion of them)." },
   S5: { title: "…after plants power themselves", story: "Stations run on their own electricity too — a coal plant uses roughly 6–9% of what it makes before any leaves the gate." },
   S6: { title: "What reached the local grid", story: "Crossing the country costs a few percent more, lost as heat in the wires." },
   S7: { title: "What was billed & paid for", story: "Of the power handed to distribution companies, one unit in six is lost in local wires, never billed, or billed but never paid." },
@@ -32,6 +32,7 @@ function headline(s) {
   if (s.id === "S1") return `${fmtIN(s.value / 1000)}<small>GW</small>`;
   if (s.id === "S4") return `${fmtIN(s.value / 1000)}<small>BU</small>`;
   if (s.id === "S7") return `${s.metrics.atc_loss_pct.toFixed(1)}%<small>lost</small>`;
+  if (s.id === "S8" && s.metrics) return `${fmtIN(s.metrics.per_capita_kwh)}<small>units/person</small>`;
   return "";
 }
 
@@ -39,7 +40,8 @@ function detailsBlock(s) {
   const rows = [];
   rows.push(["Stage", `${s.id} — ${s.name}`]);
   if (s.value !== undefined) rows.push(["As published", `${fmtIN(s.value)} ${s.unit}`]);
-  if (s.metrics) rows.push(["Identity", `billing ${s.metrics.billing_efficiency_pct}% × collection ${s.metrics.collection_efficiency_pct}% → AT&C ${s.metrics.atc_loss_pct}%`]);
+  if (s.metrics && s.metrics.atc_loss_pct) rows.push(["Identity", `billing ${s.metrics.billing_efficiency_pct}% × collection ${s.metrics.collection_efficiency_pct}% → AT&C ${s.metrics.atc_loss_pct}%`]);
+  if (s.metrics && s.metrics.per_capita_kwh) rows.push(["Measured", `per-capita consumption ${fmtIN(s.metrics.per_capita_kwh)} kWh/yr (utilities + non-utilities basis); supply hours & reliability still unmeasured`]);
   if (s.grade) rows.push(["Coverage grade", s.grade + " (published primary series)"]);
   if (s.as_of) rows.push(["As of", s.as_of]);
   if (s.period) rows.push(["Period", s.period]);
@@ -54,12 +56,15 @@ function detailsBlock(s) {
 function stageCard(s) {
   const c = COPY[s.id] || { title: s.name, story: "" };
   const el = document.createElement("article");
-  const populated = s.status === "populated";
+  const populated = s.status === "populated" || s.status === "partial";
   el.className = "stage-card" + (populated ? "" : " pending");
+  const right = populated
+    ? `<span class="stage-num">${headline(s)}</span>${s.status === "partial" ? `<span class="pending-chip">partly measured</span>` : ""}`
+    : `<span class="pending-chip">not yet measured here</span>`;
   el.innerHTML = `
     <div class="stage-top">
       <span class="stage-title">${c.title}</span>
-      ${populated ? `<span class="stage-num">${headline(s)}</span>` : `<span class="pending-chip">not yet measured here</span>`}
+      ${right}
     </div>
     <p class="stage-story">${c.story}</p>`;
   if (s.breakdown) {
@@ -88,8 +93,8 @@ function tiles(chain, captive) {
   const s7 = chain.stages.find((s) => s.id === "S7");
   const selfShare = captive.gap_value / (captive.gap_value + s4.value);
   const t = [
-    [`${fmtIN(s1.value / 1000)}<small>GW</small>`, "power stations India has built — its generating muscle"],
-    [`${fmtIN(s4.value / 1000)}<small>BU</small>`, "billion units of electricity actually made this year"],
+    [`${fmtIN(s1.value / 1000)}<small>GW</small>`, "of power stations built — how much India <em>can</em> make at once"],
+    [`${fmtIN(s4.value / 1000)}<small>BU</small>`, "billion units made this year — a 'unit' is the kWh your meter counts"],
     [`${s7.metrics.atc_loss_pct.toFixed(1)}<small>%</small>`, "of delivered power is lost, unbilled, or unpaid"],
     [`1 in ${Math.round(1 / selfShare)}<small>units</small>`, "is made off the public grid — factories & rooftops"],
   ];
@@ -143,6 +148,20 @@ function lesson(chain) {
       that data is still being wired up.)</p>
     </div>`;
 }
+
+/* theme toggle: light is the default; choice persists */
+const themeBtn = document.getElementById("themeBtn");
+function syncThemeBtn() {
+  const dark = document.documentElement.dataset.theme === "dark";
+  themeBtn.textContent = dark ? "☀" : "☾";
+}
+themeBtn.addEventListener("click", () => {
+  const dark = document.documentElement.dataset.theme === "dark";
+  if (dark) { delete document.documentElement.dataset.theme; localStorage.theme = "light"; }
+  else { document.documentElement.dataset.theme = "dark"; localStorage.theme = "dark"; }
+  syncThemeBtn();
+});
+syncThemeBtn();
 
 async function main() {
   const chain = await (await fetch("data/chain.json")).json();
