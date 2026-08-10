@@ -3,46 +3,60 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>India Electricity Dashboard — the chain</title>
+<title>Where does India's electricity actually go?</title>
+<meta name="description" content="From the megawatts announced to the power that reaches your plug — India's electricity, one honest chain, built from the government's own records.">
+<link rel="stylesheet" href="fonts.css">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<header>
-  <h1>India Electricity Dashboard</h1>
-  <p class="tagline">From what gets announced to what gets delivered — every stage, every gap, honestly.</p>
-  <p class="period" id="period"></p>
+<div class="glow glow-a" aria-hidden="true"></div>
+<div class="glow glow-b" aria-hidden="true"></div>
+
+<header class="hero">
+  <p class="badge reveal">India · Electricity · FY&nbsp;2023-24</p>
+  <h1 class="reveal d1">Where does India's electricity <em>actually</em> go?</h1>
+  <p class="lede reveal d2">From the megawatts announced in headlines to the power that reaches your
+  plug, a lot happens — and a lot goes missing. This is that journey, told honestly,
+  from the government's own records.</p>
+  <div id="tiles" class="tiles reveal d3"></div>
 </header>
 
 <main>
-  <section id="chain" aria-label="The electricity chain"></section>
-
-  <section id="longview" aria-label="The long view — time series">
-    <h2>The long view, 1947–2024</h2>
-    <p>The chain above is one year's snapshot. These are the same headline stages over
-    77 years — every point parsed from CEA's own historical tables.</p>
+  <section id="chain-section">
+    <h2 class="reveal">Follow the electricity</h2>
+    <p class="sec-lede reveal">Nine steps from promise to plug. Some steps India measures well,
+    some barely at all — the faint cards are the honest gaps. Tap any card for the fine print.</p>
+    <div id="chain"></div>
   </section>
 
-  <section class="explain">
-    <h2>How to read this</h2>
-    <p>Each box is a <strong>stage</strong> of India's electricity system. The chain runs from
-    capacity that exists on paper (megawatts) to electricity actually generated, delivered,
-    paid for, and received (units of energy). <strong>Grey stages are not populated yet</strong> —
-    either because the parser is still to be written, or because India does not publish the
-    data. This dashboard shows that difference instead of hiding it.</p>
-    <p>Stages 0–3 are measured in <strong>power (MW)</strong> — what could be produced at an instant.
-    Stages 4–8 are measured in <strong>energy (GWh)</strong> — what actually was produced over the year.
-    They are not interchangeable, and the bridge between them is the single most
-    misunderstood step in the sector.</p>
+  <section id="lesson"></section>
+
+  <section id="longview">
+    <h2>The long view <span class="range">1947 – 2024</span></h2>
+    <p class="sec-lede">Everything above is one year. Here are the same headlines across
+    seventy-seven years — every point taken from CEA's own historical tables.</p>
   </section>
 
-  <section id="notes" class="explain">
-    <h2>Provenance</h2>
-    <ul id="provenance"></ul>
-    <p class="fine">Built per <a href="https://github.com/subtlesk/indiainfra">chain-specification-v0.2</a>.
-    Every number traces to an archived primary-source file; invariant checks run in CI and
-    a violation fails the build.</p>
+  <section id="method">
+    <details>
+      <summary>How this is built — sources, checks &amp; honest limits</summary>
+      <div class="method-body">
+        <p>Every number on this page is parsed from an archived primary-source government file —
+        never typed in from memory. The build recomputes the whole page from those files and runs
+        identity checks (do the parts sum to the whole? does the same figure agree across two
+        independent documents?). If any check fails, the site does not publish.</p>
+        <ul id="provenance"></ul>
+        <p>Where India's own published tables don't add up (they sometimes don't), the difference
+        is shown as a "residual" — published, never hidden. Full model:
+        <a href="https://github.com/subtlesk/indiainfra">chain specification v0.2 on GitHub</a>.</p>
+      </div>
+    </details>
   </section>
 </main>
+
+<footer>
+  <p>An open public-interest project. Data: CEA, PFC, Grid-India &amp; the source registry in the spec.</p>
+</footer>
 
 <script src="app.js"></script>
 <script src="chart.js"></script>

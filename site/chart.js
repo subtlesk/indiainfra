@@ -10,7 +10,7 @@ const SERIES = [
   { key: "nuclear", label: "Nuclear", slot: 4 },
 ];
 
-const fmtIN = (n, d = 0) => n.toLocaleString("en-IN", { maximumFractionDigits: d });
+const fmtNum = (n, d = 0) => n.toLocaleString("en-IN", { maximumFractionDigits: d });
 
 function lineChart(host, rows, { title, subtitle, unit, divisor, rawUnit }) {
   const W = 860, H = 392, M = { t: 30, r: 96, b: 34, l: 56 };
@@ -38,7 +38,7 @@ function lineChart(host, rows, { title, subtitle, unit, divisor, rawUnit }) {
 
   for (let v = 0; v <= yTop; v += yStep) {
     g += `<line class="grid" x1="${M.l}" y1="${Y(v)}" x2="${W - M.r}" y2="${Y(v)}"/>` +
-         `<text class="tick ynum" x="${M.l - 8}" y="${Y(v) + 4}" text-anchor="end">${fmtIN(v)}</text>`;
+         `<text class="tick ynum" x="${M.l - 8}" y="${Y(v) + 4}" text-anchor="end">${fmtNum(v)}</text>`;
   }
   for (let yr = 1950; yr <= 2020; yr += 10) {
     g += `<text class="tick" x="${X(yr)}" y="${H - M.b + 18}" text-anchor="middle">${yr}</text>`;
@@ -83,9 +83,9 @@ function lineChart(host, rows, { title, subtitle, unit, divisor, rawUnit }) {
     cross.style.display = "";
     tip.style.display = "";
     tip.innerHTML = `<strong>${row.year}</strong>` +
-      SERIES.map((s) => `<div><i style="background:var(--series-${s.slot})"></i>${s.label} <b>${fmtIN(row[s.key] / divisor, 1)}</b></div>`).join("") +
-      `<div class="tot">Total <b>${fmtIN(row.total / divisor, 1)}</b> ${unit}</div>` +
-      (row.residual ? `<div class="resid">residual ${fmtIN(row.residual / divisor, 1)} (source total excl. gas/diesel)</div>` : "");
+      SERIES.map((s) => `<div><i style="background:var(--series-${s.slot})"></i>${s.label} <b>${fmtNum(row[s.key] / divisor, 1)}</b></div>`).join("") +
+      `<div class="tot">Total <b>${fmtNum(row.total / divisor, 1)}</b> ${unit}</div>` +
+      (row.residual ? `<div class="resid">residual ${fmtNum(row.residual / divisor, 1)} (source total excl. gas/diesel)</div>` : "");
     const r = fig.getBoundingClientRect();
     const left = ((X(row.year) / W) * r.width);
     tip.style.left = Math.min(left + 12, r.width - 170) + "px";
@@ -98,7 +98,7 @@ function lineChart(host, rows, { title, subtitle, unit, divisor, rawUnit }) {
     <div class="viz-tablewrap"><table>
       <thead><tr><th>Year</th>${SERIES.map((s) => `<th>${s.label}</th>`).join("")}<th>Total</th><th>Residual</th></tr></thead>
       <tbody>${rows.map((r) =>
-        `<tr><td>${r.year}</td>${SERIES.map((s) => `<td>${fmtIN(r[s.key])}</td>`).join("")}<td>${fmtIN(r.total)}</td><td>${r.residual ? fmtIN(r.residual) : ""}</td></tr>`).join("")}
+        `<tr><td>${r.year}</td>${SERIES.map((s) => `<td>${fmtNum(r[s.key])}</td>`).join("")}<td>${fmtNum(r.total)}</td><td>${r.residual ? fmtNum(r.residual) : ""}</td></tr>`).join("")}
       </tbody></table></div>`;
   fig.appendChild(det);
   host.appendChild(fig);
