@@ -11,7 +11,7 @@ import json
 import sys
 from pathlib import Path
 
-from . import parse_cea
+from . import parse_cea, parse_grid_india
 
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "site" / "data" / "chain.json"
@@ -24,6 +24,7 @@ def build() -> dict:
     s1 = parse_cea.installed_capacity_fy24()
     s4 = parse_cea.gross_generation_fy24()
     captive = parse_cea.captive_generation_fy24()
+    peak = parse_grid_india.peak_demand_met_fy24()
     pfc = json.loads((ROOT / "data/verified/pfc_fy2024.json").read_text())
 
     atc = json.loads(json.dumps(pfc))  # copy
@@ -41,8 +42,11 @@ def build() -> dict:
          "as_of": s1["as_of"], "source": "SRC-1", "source_file": s1["source_file"]},
         {"id": "S2", "name": "Available capacity", "unit": "MW", "status": "pending",
          "note": "Needs NPP daily outage parsing (PDF at scale)."},
-        {"id": "S3", "name": "Dispatched", "unit": "MW", "status": "pending",
-         "note": "Needs Grid-India PSP archive parsing (FY2013-14 onward)."},
+        {"id": "S3", "name": "Dispatched", "unit": "MW", "status": "partial",
+         "metrics": {"peak_met_MW": peak["peak_met_MW"], "peak_met_on": peak["on"]},
+         "grade": "A", "period": "FY2023-24", "source": "SRC-4",
+         "source_file": peak["source_file"],
+         "note": "Peak demand MET (unmet shortage excluded; CEA's peak-demand figure comes with the S2-S3 gap). Average dispatch and monthly resolution need the full monthly-report archive (2012-13 onward, now API-reachable)."},
         {"id": "S4", "name": "Gross generation", "unit": "GWh", "status": "populated",
          "value": s4["value_GWh"], "breakdown": s4["breakdown_GWh"], "grade": "A",
          "period": s4["period"], "source": "SRC-1", "source_file": s4["source_file"]},
@@ -160,6 +164,15 @@ def check_invariants(chain: dict) -> list[str]:
         chk = e.get("atc_identity_check")
         if chk and abs(chk["lhs_atc_pct"] - chk["rhs_from_efficiencies_pct"]) > 0.25:
             errors.append(f"AT&C identity broken: {chk}")
+
+    # Peak demand met must be physically consistent: below installed capacity,
+    # above half of it (sanity band for modern India).
+    s3 = by_id.get("S3", {})
+    if s3.get("metrics"):
+        pk = s3["metrics"]["peak_met_MW"]
+        ic = by_id["S1"]["value"]
+        if not (ic * 0.3 < pk < ic):
+            errors.append(f"S3 peak met {pk} MW implausible against installed {ic} MW")
 
     # Cross-validation: RES generation in S4 breakdown must match the
     # Executive Summary figure (225.83 BU) within rounding.

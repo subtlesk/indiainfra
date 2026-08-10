@@ -37,8 +37,19 @@ SOURCES = {
     "SRC-4": {
         "name": "Grid-India / POSOCO / NLDC",
         # grid-india.in serves a broken TLS chain; posoco.in intermittently 502s.
+        # The website is an SPA over a clean undocumented JSON API:
+        #   POST webapi.grid-india.in/api/v1/file/get-period {_source:"grdw", _fileType:"REPORTS_MONTHLY_REPORT"}
+        #   POST webapi.grid-india.in/api/v1/file {_source:"grdw", _type:"REPORTS_MONTHLY_REPORT", _fileDate:"2023-24", _month:"03"}
+        # Files are served from webcdn.grid-india.in/<FilePath>. Archive: 2012-13 onward.
         "quirks": ["insecure_tls", "retry"],
-        "files": {},
+        "files": {
+            # Monthly operational report March 2024 - daily national peak-met and
+            # energy-met tables + "All Time Highest" (FY24 peak demand met).
+            "monthly_2024_03": {
+                "url": "https://webcdn.grid-india.in/files/grdw/uploads/download-manager-files/Monthly_Report_Mar_2024.pdf",
+                "path": "data/raw/SRC-4/monthly/Monthly_Report_Mar_2024.pdf",
+            },
+        },
     },
     "SRC-5": {
         "name": "PFC — Report on Performance of Power Utilities",

@@ -37,7 +37,7 @@ def installed_capacity_fy24() -> dict:
                     "res_incl_small_hydro": round(res, 1),
                 },
                 "as_of": "2024-03-31",
-                "source_file": str(path.relative_to(ROOT)),
+                "source_file": path.relative_to(ROOT).as_posix(),
             }
     raise ValueError("grand-total row not found — CEA changed the sheet layout")
 
@@ -68,7 +68,7 @@ def gross_generation_fy24() -> dict:
                     "res": res,
                 },
                 "period": "FY2023-24",
-                "source_file": str(path.relative_to(ROOT)),
+                "source_file": path.relative_to(ROOT).as_posix(),
             }
     raise ValueError("FY2023-24 row not found in Growth Book Table 3")
 
@@ -175,6 +175,6 @@ def captive_generation_fy24() -> dict:
                 "value_GWh": total,
                 "provisional": True,
                 "period": "FY2023-24",
-                "source_file": str(path.relative_to(ROOT)),
+                "source_file": path.relative_to(ROOT).as_posix(),
             }
     raise ValueError("FY2023-24 row not found in Growth Book Table 7")
