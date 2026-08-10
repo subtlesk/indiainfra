@@ -56,8 +56,11 @@ def build() -> dict:
                      "collection_efficiency_pct": atc["collection_efficiency_pct"]},
          "grade": atc["grade"], "period": atc["period"], "source": atc["source"],
          "hand_verified": atc["hand_verified"]},
-        {"id": "S8", "name": "Service received", "unit": "mixed", "status": "pending",
-         "note": "Weakest stage: no live public supply-quality feed (ESMI discontinued). Annual PIB statements only."},
+        {"id": "S8", "name": "Service received", "unit": "mixed", "status": "partial",
+         "metrics": {"per_capita_kwh": parse_cea.per_capita_series()[-1]["kwh"]},
+         "grade": "B", "period": "FY2023-24", "source": "SRC-1",
+         "source_file": "data/raw/SRC-1/growth-book/Growth_Book_2024.pdf",
+         "note": "Per-capita consumption is measurable (utilities + non-utilities basis). Supply hours and reliability still have no live public feed (ESMI discontinued) - annual PIB statements only."},
     ]
 
     edges = [
@@ -106,6 +109,8 @@ def build_series() -> dict:
         "note": "Utilities only (captive/bypass excluded). Rows before 1992 are plan-end years - irregular spacing. 'residual' = printed CEA total minus sum of modes; non-zero 1950-1969 because CEA's printed generation totals there exclude gas and diesel.",
         "capacity_MW": cap,
         "generation_GWh": gen,
+        "per_capita_kWh": parse_cea.per_capita_series(),
+        "consumption_GWh": parse_cea.consumption_series(),
     }
 
 
@@ -117,6 +122,13 @@ def check_series_invariants(series: dict) -> list[str]:
                 errors.append(f"{key} {r['year']}: residual {r['residual']} exceeds 5% of total")
             if r["year"] >= 1970 and abs(r["residual"]) > max(3, r["total"] * 2e-4):
                 errors.append(f"{key} {r['year']}: unexplained residual {r['residual']} after 1970")
+    for r in series["consumption_GWh"]:
+        parts = sum(r[k] for k in ("domestic", "commercial", "industrial", "traction", "agriculture", "misc"))
+        if abs(parts - r["total"]) > max(3, r["total"] * 2e-3):
+            errors.append(f"consumption {r['year']}: categories sum {parts} vs printed total {r['total']}")
+    pc = series["per_capita_kWh"]
+    if pc[0] != {"year": 1947, "kwh": 16.0} or not (1200 < pc[-1]["kwh"] < 1700):
+        errors.append("per-capita series endpoints out of expected range")
     # FY24 endpoints must agree with the chain's independently parsed values.
     if abs(series["capacity_MW"][-1]["total"] - 441_969.5) > 2:
         errors.append("capacity series 2024 endpoint disagrees with IC xlsx")
@@ -172,8 +184,9 @@ def main() -> int:
     OUT.write_text(json.dumps(chain, indent=2))
     OUT_SERIES.write_text(json.dumps(series, indent=2))
     populated = sum(1 for s in chain["stages"] if s["status"] == "populated")
+    partial = sum(1 for s in chain["stages"] if s["status"] == "partial")
     n = len(series["capacity_MW"])
-    print(f"wrote {OUT.relative_to(ROOT)} - {populated}/9 stages populated, all invariants pass")
+    print(f"wrote {OUT.relative_to(ROOT)} - {populated} full + {partial} partial of 9 stages, all invariants pass")
     print(f"wrote {OUT_SERIES.relative_to(ROOT)} - {n} rows per series, 1947-2024")
     return 0
 

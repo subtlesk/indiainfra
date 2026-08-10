@@ -1,23 +1,26 @@
 /* Time-series line charts from site/data/series.json.
-   Palette: dataviz reference categorical slots 1-4, entity-stable across charts.
+   Palette: dataviz reference categorical slots, entity-stable across charts.
    Light-mode aqua/yellow are sub-3:1 on the surface -> relief rule: direct
    end-labels + data table (both shipped here). */
 
-const SERIES = [
-  { key: "thermal", label: "Thermal", slot: 2 },
-  { key: "hydro",   label: "Hydro",   slot: 1 },
-  { key: "res",     label: "RES",     slot: 3 },
-  { key: "nuclear", label: "Nuclear", slot: 4 },
+const MODE_SERIES = [
+  { key: "thermal", label: "Thermal", color: "var(--series-2)" },
+  { key: "hydro",   label: "Hydro",   color: "var(--series-1)" },
+  { key: "res",     label: "RES",     color: "var(--series-3)" },
+  { key: "nuclear", label: "Nuclear", color: "var(--series-4)" },
 ];
 
 const fmtNum = (n, d = 0) => n.toLocaleString("en-IN", { maximumFractionDigits: d });
 
-function lineChart(host, rows, { title, subtitle, unit, divisor, rawUnit }) {
+function lineChart(host, rows, opts) {
+  const { title, subtitle, unit, divisor, rawUnit, series } = opts;
   const W = 860, H = 392, M = { t: 30, r: 96, b: 34, l: 56 };
   const pw = W - M.l - M.r, ph = H - M.t - M.b;
   const years = rows.map((r) => r.year);
   const x0 = years[0], x1 = years[years.length - 1];
-  const yMax = Math.max(...rows.map((r) => r.total)) / divisor;
+  const maxVal = Math.max(...rows.map((r) =>
+    Math.max(...series.map((s) => r[s.key] ?? 0))));
+  const yMax = maxVal / divisor;
   const yStep = niceStep(yMax / 4.5);
   const yTop = Math.ceil(yMax / yStep) * yStep;
   const X = (yr) => M.l + (pw * (yr - x0)) / (x1 - x0);
@@ -25,15 +28,14 @@ function lineChart(host, rows, { title, subtitle, unit, divisor, rawUnit }) {
 
   const fig = document.createElement("figure");
   fig.className = "viz-root";
-  fig.innerHTML = `<figcaption><strong>${title}</strong><span class="viz-sub">${subtitle}</span></figcaption>
-    <div class="viz-legend" role="list">${SERIES.map((s) =>
-      `<span role="listitem"><i style="background:var(--series-${s.slot})"></i>${s.label}</span>`).join("")}
-    </div>`;
+  fig.innerHTML = `<figcaption><strong>${title}</strong><span class="viz-sub">${subtitle}</span></figcaption>` +
+    (series.length > 1 ? `<div class="viz-legend" role="list">${series.map((s) =>
+      `<span role="listitem"><i style="background:${s.color}"></i>${s.label}</span>`).join("")}</div>` : "");
 
   const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
   svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
   svg.setAttribute("role", "img");
-  svg.setAttribute("aria-label", `${title}, line chart, 1947 to 2024`);
+  svg.setAttribute("aria-label", `${title}, line chart, ${x0} to ${x1}`);
   let g = "";
 
   for (let v = 0; v <= yTop; v += yStep) {
@@ -46,21 +48,23 @@ function lineChart(host, rows, { title, subtitle, unit, divisor, rawUnit }) {
   g += `<line class="axis" x1="${M.l}" y1="${Y(0)}" x2="${W - M.r}" y2="${Y(0)}"/>`;
   g += `<text class="tick" x="${M.l - 8}" y="14" text-anchor="end">${unit}</text>`;
 
-  for (const s of SERIES) {
+  for (const s of series) {
     const pts = rows.map((r) => `${X(r.year)},${Y(r[s.key] / divisor)}`).join(" ");
-    g += `<polyline class="series" points="${pts}" style="stroke:var(--series-${s.slot})"/>`;
+    g += `<polyline class="series" points="${pts}" style="stroke:${s.color}"/>`;
     g += rows.map((r) =>
-      `<circle class="dot" cx="${X(r.year)}" cy="${Y(r[s.key] / divisor)}" r="2.2" style="fill:var(--series-${s.slot})"/>`).join("");
+      `<circle class="dot" cx="${X(r.year)}" cy="${Y(r[s.key] / divisor)}" r="2.2" style="fill:${s.color}"/>`).join("");
   }
 
   // direct end-labels, nudged apart (relief for low-contrast slots)
-  const ends = SERIES.map((s) => ({ s, y: Y(rows[rows.length - 1][s.key] / divisor) }))
+  const ends = series.map((s) => ({ s, y: Y(rows[rows.length - 1][s.key] / divisor) }))
     .sort((a, b) => a.y - b.y);
   for (let i = 1; i < ends.length; i++) {
     if (ends[i].y - ends[i - 1].y < 15) ends[i].y = ends[i - 1].y + 15;
   }
-  for (const e of ends) {
-    g += `<text class="endlabel" x="${W - M.r + 8}" y="${e.y + 4}">${e.s.label}</text>`;
+  if (series.length > 1) {
+    for (const e of ends) {
+      g += `<text class="endlabel" x="${W - M.r + 8}" y="${e.y + 4}">${e.s.label}</text>`;
+    }
   }
 
   g += `<line class="cross" x1="0" y1="${M.t}" x2="0" y2="${H - M.b}" style="display:none"/>`;
@@ -83,8 +87,8 @@ function lineChart(host, rows, { title, subtitle, unit, divisor, rawUnit }) {
     cross.style.display = "";
     tip.style.display = "";
     tip.innerHTML = `<strong>${row.year}</strong>` +
-      SERIES.map((s) => `<div><i style="background:var(--series-${s.slot})"></i>${s.label} <b>${fmtNum(row[s.key] / divisor, 1)}</b></div>`).join("") +
-      `<div class="tot">Total <b>${fmtNum(row.total / divisor, 1)}</b> ${unit}</div>` +
+      series.map((s) => `<div><i style="background:${s.color}"></i>${s.label} <b>${fmtNum(row[s.key] / divisor, 1)}</b></div>`).join("") +
+      (row.total !== undefined ? `<div class="tot">Total <b>${fmtNum(row.total / divisor, 1)}</b> ${unit}</div>` : "") +
       (row.residual ? `<div class="resid">residual ${fmtNum(row.residual / divisor, 1)} (source total excl. gas/diesel)</div>` : "");
     const r = fig.getBoundingClientRect();
     const left = ((X(row.year) / W) * r.width);
@@ -93,12 +97,14 @@ function lineChart(host, rows, { title, subtitle, unit, divisor, rawUnit }) {
   svg.addEventListener("mouseleave", () => { cross.style.display = "none"; tip.style.display = "none"; });
 
   // data table (relief + accessibility)
+  const hasTotal = rows[0].total !== undefined;
+  const hasResid = rows.some((r) => r.residual);
   const det = document.createElement("details");
   det.innerHTML = `<summary>Data table (${rawUnit}, as printed by CEA)</summary>
     <div class="viz-tablewrap"><table>
-      <thead><tr><th>Year</th>${SERIES.map((s) => `<th>${s.label}</th>`).join("")}<th>Total</th><th>Residual</th></tr></thead>
+      <thead><tr><th>Year</th>${series.map((s) => `<th>${s.label}</th>`).join("")}${hasTotal ? "<th>Total</th>" : ""}${hasResid ? "<th>Residual</th>" : ""}</tr></thead>
       <tbody>${rows.map((r) =>
-        `<tr><td>${r.year}</td>${SERIES.map((s) => `<td>${fmtNum(r[s.key])}</td>`).join("")}<td>${fmtNum(r.total)}</td><td>${r.residual ? fmtNum(r.residual) : ""}</td></tr>`).join("")}
+        `<tr><td>${r.year}</td>${series.map((s) => `<td>${fmtNum(r[s.key])}</td>`).join("")}${hasTotal ? `<td>${fmtNum(r.total)}</td>` : ""}${hasResid ? `<td>${r.residual ? fmtNum(r.residual) : ""}</td>` : ""}</tr>`).join("")}
       </tbody></table></div>`;
   fig.appendChild(det);
   host.appendChild(fig);
@@ -113,16 +119,38 @@ function niceStep(raw) {
 async function charts() {
   const s = await (await fetch("data/series.json")).json();
   const host = document.getElementById("longview");
+
   lineChart(host, s.capacity_MW, {
-    title: "Installed capacity by mode, 1947–2024",
-    subtitle: "GW · utilities · points are CEA's published years (plan-ends before 1992)",
-    unit: "GW", divisor: 1000, rawUnit: "MW",
+    title: "Machines built, by mode",
+    subtitle: "GW of installed capacity · utilities · points are CEA's published years (plan-ends before 1992)",
+    unit: "GW", divisor: 1000, rawUnit: "MW", series: MODE_SERIES,
   });
   lineChart(host, s.generation_GWh, {
-    title: "Gross generation by mode, 1947 – FY 2023-24",
-    subtitle: "billion units (1 BU = 1 TWh = 1,000 GWh) · utilities · fiscal years from 1955-56",
-    unit: "BU", divisor: 1000, rawUnit: "GWh",
+    title: "Electricity made, by mode",
+    subtitle: "billion units · a 'unit' is what your meter counts (1 kWh); 1 BU = 1,000 GWh · utilities · fiscal years from 1955-56",
+    unit: "BU", divisor: 1000, rawUnit: "GWh", series: MODE_SERIES,
   });
+  const consumed = s.consumption_GWh.map((r) => ({ ...r, other: r.traction + r.misc }));
+  lineChart(host, consumed, {
+    title: "Who uses it",
+    subtitle: "billion units consumed · includes industry's own captive power (non-utilities) · latest year is CEA's provisional round estimate",
+    unit: "BU", divisor: 1000, rawUnit: "GWh",
+    series: [
+      { key: "industrial",  label: "Industry",    color: "var(--series-2)" },
+      { key: "domestic",    label: "Homes",       color: "var(--series-1)" },
+      { key: "agriculture", label: "Agriculture", color: "var(--series-3)" },
+      { key: "commercial",  label: "Commercial",  color: "var(--series-4)" },
+      { key: "other",       label: "Other",       color: "var(--muted-ink)" },
+    ],
+  });
+  lineChart(host, s.per_capita_kWh, {
+    title: "Electricity per person",
+    subtitle: "units (kWh) per person per year · utilities + non-utilities · 16 units in 1947 → " +
+      fmtNum(s.per_capita_kWh.at(-1).kwh) + " in 2024",
+    unit: "kWh", divisor: 1, rawUnit: "kWh",
+    series: [{ key: "kwh", label: "Per person", color: "var(--series-1)" }],
+  });
+
   const p = document.createElement("p");
   p.className = "fine";
   p.innerHTML = `Same four modes, two very different pictures: in FY2023-24 renewables were

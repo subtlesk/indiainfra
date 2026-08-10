@@ -136,6 +136,31 @@ def generation_series() -> list[dict]:
     return rows
 
 
+def per_capita_series() -> list[dict]:
+    """Per-capita electricity consumption (kWh), 1947-2024, Growth Book Table 1
+    (pdf p10, last numeric column). Basis: utilities + non-utilities."""
+    rows = [{"year": y, "kwh": n[-1]} for y, n in _history_rows(9, 1)]
+    assert rows[0] == {"year": 1947, "kwh": 16.0}, rows[0]
+    assert rows[-1]["year"] == 2024 and 1200 < rows[-1]["kwh"] < 1700, rows[-1]
+    return rows
+
+
+def consumption_series() -> list[dict]:
+    """Category-wise electricity consumption (GWh), utilities + non-utilities,
+    1947-2024, Growth Book Table 4 (pdf p44).
+
+    Line format: dom, dom%, com, com%, ind, ind%, traction, tr%, agri, ag%,
+    misc, misc%, total.
+    """
+    rows = []
+    for year, n in _history_rows(43, 13):
+        rows.append({"year": year, "domestic": n[0], "commercial": n[2],
+                     "industrial": n[4], "traction": n[6], "agriculture": n[8],
+                     "misc": n[10], "total": n[12]})
+    assert rows[0]["year"] == 1947 and rows[-1]["year"] == 2024, [rows[0], rows[-1]]
+    return rows
+
+
 def captive_generation_fy24() -> dict:
     """FY2023-24 captive generation (GWh, plants >=0.5 MW), Growth Book Table 7.
 

@@ -98,8 +98,15 @@
       "id": "S8",
       "name": "Service received",
       "unit": "mixed",
-      "status": "pending",
-      "note": "Weakest stage: no live public supply-quality feed (ESMI discontinued). Annual PIB statements only."
+      "status": "partial",
+      "metrics": {
+        "per_capita_kwh": 1395.0
+      },
+      "grade": "B",
+      "period": "FY2023-24",
+      "source": "SRC-1",
+      "source_file": "data/raw/SRC-1/growth-book/Growth_Book_2024.pdf",
+      "note": "Per-capita consumption is measurable (utilities + non-utilities basis). Supply hours and reliability still have no live public feed (ESMI discontinued) - annual PIB statements only."
     }
   ],
   "edges": [
