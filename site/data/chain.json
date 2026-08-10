@@ -30,7 +30,7 @@
       "grade": "A",
       "as_of": "2024-03-31",
       "source": "SRC-1",
-      "source_file": "data\\raw\\SRC-1\\2024-03\\IC_Mar_2024_allocation_wise.xlsx"
+      "source_file": "data/raw/SRC-1/2024-03/IC_Mar_2024_allocation_wise.xlsx"
     },
     {
       "id": "S2",
@@ -43,8 +43,16 @@
       "id": "S3",
       "name": "Dispatched",
       "unit": "MW",
-      "status": "pending",
-      "note": "Needs Grid-India PSP archive parsing (FY2013-14 onward)."
+      "status": "partial",
+      "metrics": {
+        "peak_met_MW": 239978.0,
+        "peak_met_on": "2023-09-01"
+      },
+      "grade": "A",
+      "period": "FY2023-24",
+      "source": "SRC-4",
+      "source_file": "data/raw/SRC-4/monthly/Monthly_Report_Mar_2024.pdf",
+      "note": "Peak demand MET (unmet shortage excluded; CEA's peak-demand figure comes with the S2-S3 gap). Average dispatch and monthly resolution need the full monthly-report archive (2012-13 onward, now API-reachable)."
     },
     {
       "id": "S4",
@@ -63,7 +71,7 @@
       "grade": "A",
       "period": "FY2023-24",
       "source": "SRC-1",
-      "source_file": "data\\raw\\SRC-1\\growth-book\\Growth_Book_2024.pdf"
+      "source_file": "data/raw/SRC-1/growth-book/Growth_Book_2024.pdf"
     },
     {
       "id": "S5",
@@ -129,7 +137,7 @@
       "provisional": true,
       "grade": "B",
       "source": "SRC-1",
-      "source_file": "data\\raw\\SRC-1\\growth-book\\Growth_Book_2024.pdf",
+      "source_file": "data/raw/SRC-1/growth-book/Growth_Book_2024.pdf",
       "label": "Captive generation (plants >=0.5 MW) - bypasses S6-S7",
       "citizen_note": "A large slice of India's electricity never touches the public grid's books - factories generating for themselves, rooftop solar, direct purchases - which is why national totals and your electricity bill never quite reconcile."
     },

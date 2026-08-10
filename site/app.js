@@ -18,7 +18,7 @@ const COPY = {
   S0: { title: "What's promised", story: "Announced projects queue up for land, loans and clearances. Many never make it — and this page will track how many." },
   S1: { title: "What's built", story: "Every power station connected to the grid — coal to rooftop-scale solar — at the end of March 2024." },
   S2: { title: "What's ready to run", story: "Built isn't always available: maintenance, breakdowns and fuel shortages keep part of the fleet offline every day." },
-  S3: { title: "What's called on", story: "Ready plants run only when someone buys their power — and buyers who can't pay ask for less than people need." },
+  S3: { title: "What's called on", story: "Ready plants run only when someone buys their power. The most India called for at once this year was about 240 GW — barely over half of what's built. Some of the rest was broken, resting, or simply unaffordable to buy." },
   S4: { title: "What was generated", story: "All the electricity India's utility power stations actually produced over the year — measured in 'units', the same units your electricity meter counts (1 unit = 1 kWh; a BU is a billion of them)." },
   S5: { title: "…after plants power themselves", story: "Stations run on their own electricity too — a coal plant uses roughly 6–9% of what it makes before any leaves the gate." },
   S6: { title: "What reached the local grid", story: "Crossing the country costs a few percent more, lost as heat in the wires." },
@@ -33,6 +33,7 @@ function headline(s) {
   if (s.id === "S4") return `${fmtIN(s.value / 1000)}<small>BU</small>`;
   if (s.id === "S7") return `${s.metrics.atc_loss_pct.toFixed(1)}%<small>lost</small>`;
   if (s.id === "S8" && s.metrics) return `${fmtIN(s.metrics.per_capita_kwh)}<small>units/person</small>`;
+  if (s.id === "S3" && s.metrics) return `${fmtIN(s.metrics.peak_met_MW / 1000)}<small>GW peak</small>`;
   return "";
 }
 
@@ -42,6 +43,7 @@ function detailsBlock(s) {
   if (s.value !== undefined) rows.push(["As published", `${fmtIN(s.value)} ${s.unit}`]);
   if (s.metrics && s.metrics.atc_loss_pct) rows.push(["Identity", `billing ${s.metrics.billing_efficiency_pct}% × collection ${s.metrics.collection_efficiency_pct}% → AT&C ${s.metrics.atc_loss_pct}%`]);
   if (s.metrics && s.metrics.per_capita_kwh) rows.push(["Measured", `per-capita consumption ${fmtIN(s.metrics.per_capita_kwh)} kWh/yr (utilities + non-utilities basis); supply hours & reliability still unmeasured`]);
+  if (s.metrics && s.metrics.peak_met_MW) rows.push(["Measured", `maximum demand met ${fmtIN(s.metrics.peak_met_MW)} MW on ${s.metrics.peak_met_on} — demand MET, not demand (unmet shortage excluded)`]);
   if (s.grade) rows.push(["Coverage grade", s.grade + " (published primary series)"]);
   if (s.as_of) rows.push(["As of", s.as_of]);
   if (s.period) rows.push(["Period", s.period]);
