@@ -27,6 +27,19 @@ SOURCES = {
                 "url": "https://cea.nic.in/wp-content/uploads/executive/2024/04/Executive_Summary_April_2024.pdf",
                 "path": "data/raw/SRC-1/2024-04/Executive_Summary_April_2024.pdf",
             },
+            # CO2 Baseline Database v20.0 (Dec 2024): station-wise net generation
+            # for the conventional fleet + 5-year gross/net series (Results
+            # sheet). Source of the ACTUAL FY24 auxiliary-consumption rate.
+            "co2_baseline_v20": {
+                "url": "https://cea.nic.in/wp-content/uploads/2021/03/CO2_Database_Version_20.0_2023_24.xlsx",
+                "path": "data/raw/SRC-1/co2-baseline/CO2_Database_Version_20.0_2023_24.xlsx",
+            },
+            # Annual Report 2023-24 (archived while hunting aux data; no aux
+            # table inside - kept because sources die).
+            "annual_report_2023_24": {
+                "url": "https://cea.nic.in/wp-content/uploads/annual_reports/2024/Final_Approved_Annual_Report_2023_24_05032025_1.pdf",
+                "path": "data/raw/SRC-1/annual-report/Final_Approved_Annual_Report_2023_24_05032025_1.pdf",
+            },
             # Latest monthly IC snapshot (June 2026) — freshness probe.
             "ic_latest": {
                 "url": "https://cea.nic.in/wp-content/uploads/installed/2026/06/Website_June.xlsx",

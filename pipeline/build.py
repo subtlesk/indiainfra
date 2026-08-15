@@ -25,6 +25,14 @@ def build() -> dict:
     s4 = parse_cea.gross_generation_fy24()
     captive = parse_cea.captive_generation_fy24()
     peak = parse_grid_india.peak_demand_met_fy24()
+    aux = parse_cea.aux_consumption_fy24()
+
+    # S5 identity: conventional gross (Growth-Book basis) x (1 - actual aux
+    # rate) + RES (net~gross by CEA convention). Bhutan imports excluded on
+    # both sides - they enter at S6 as a side flow.
+    conv_gross = s4["breakdown_GWh"]["coal_lignite"] + s4["breakdown_GWh"]["gas"] + \
+        s4["breakdown_GWh"]["diesel"] + s4["breakdown_GWh"]["hydro_large"] + s4["breakdown_GWh"]["nuclear"]
+    s5_value = round(conv_gross * (1 - aux["aux_rate"]) + s4["breakdown_GWh"]["res"], 0)
     pfc = json.loads((ROOT / "data/verified/pfc_fy2024.json").read_text())
 
     atc = json.loads(json.dumps(pfc))  # copy
@@ -50,8 +58,12 @@ def build() -> dict:
         {"id": "S4", "name": "Gross generation", "unit": "GWh", "status": "populated",
          "value": s4["value_GWh"], "breakdown": s4["breakdown_GWh"], "grade": "A",
          "period": s4["period"], "source": "SRC-1", "source_file": s4["source_file"]},
-        {"id": "S5", "name": "Net generation", "unit": "GWh", "status": "pending",
-         "note": "Derived stage: needs auxiliary-consumption actuals from CEA General Review. Norm bands (coal ~5.25-8.5%) are known; actuals are not assumed."},
+        {"id": "S5", "name": "Net generation", "unit": "GWh", "status": "populated",
+         "value": s5_value, "grade": "A", "period": "FY2023-24", "source": "SRC-1",
+         "source_file": aux["source_file"],
+         "metrics": {"aux_rate_conventional": aux["aux_rate"],
+                     "aux_energy_GWh": round(conv_gross * aux["aux_rate"], 0)},
+         "note": "Derived: conventional gross x (1 - actual aux rate from the CO2 Baseline DB) + RES (net~gross, CEA convention). Aux rate is a fleet aggregate - fuel-wise split not published."},
         {"id": "S6", "name": "Delivered to distribution", "unit": "GWh", "status": "pending",
          "note": "Needs NLDC applicable-ISTS-loss series; commercial vs physical basis must be labeled."},
         {"id": "S7", "name": "Billed & collected", "unit": "%", "status": "populated",
@@ -164,6 +176,22 @@ def check_invariants(chain: dict) -> list[str]:
         chk = e.get("atc_identity_check")
         if chk and abs(chk["lhs_atc_pct"] - chk["rhs_from_efficiencies_pct"]) > 0.25:
             errors.append(f"AT&C identity broken: {chk}")
+
+    # S5: aux rate plausibility, cross-source gross agreement, and ordering.
+    s5 = by_id.get("S5", {})
+    if s5.get("metrics"):
+        rate = s5["metrics"]["aux_rate_conventional"]
+        if not (0.04 < rate < 0.10):
+            errors.append(f"S5 aux rate {rate} outside 4-10% plausibility band")
+        if not (s5["value"] < by_id["S4"]["value"]):
+            errors.append("S5 net generation not below S4 gross")
+    # Cross-validation: CO2-DB conventional gross must agree with Growth Book
+    # conventional gross within 0.5% (two independent CEA publications).
+    aux_chk = parse_cea.aux_consumption_fy24()
+    gb_conv = sum(by_id["S4"]["breakdown"][k] for k in
+                  ("coal_lignite", "gas", "diesel", "hydro_large", "nuclear"))
+    if abs(aux_chk["conventional_gross_GWh"] - gb_conv) / gb_conv > 0.005:
+        errors.append(f"CO2-DB conventional gross {aux_chk['conventional_gross_GWh']} vs Growth Book {gb_conv} disagree >0.5%")
 
     # Peak demand met must be physically consistent: below installed capacity,
     # above half of it (sanity band for modern India).
