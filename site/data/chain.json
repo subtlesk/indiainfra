@@ -77,8 +77,17 @@
       "id": "S5",
       "name": "Net generation",
       "unit": "GWh",
-      "status": "pending",
-      "note": "Derived stage: needs auxiliary-consumption actuals from CEA General Review. Norm bands (coal ~5.25-8.5%) are known; actuals are not assumed."
+      "status": "populated",
+      "value": 1632853.0,
+      "grade": "A",
+      "period": "FY2023-24",
+      "source": "SRC-1",
+      "source_file": "data/raw/SRC-1/co2-baseline/CO2_Database_Version_20.0_2023_24.xlsx",
+      "metrics": {
+        "aux_rate_conventional": 0.067298,
+        "aux_energy_GWh": 101522.0
+      },
+      "note": "Derived: conventional gross x (1 - actual aux rate from the CO2 Baseline DB) + RES (net~gross, CEA convention). Aux rate is a fleet aggregate - fuel-wise split not published."
     },
     {
       "id": "S6",

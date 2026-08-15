@@ -136,6 +136,41 @@ def generation_series() -> list[dict]:
     return rows
 
 
+def aux_consumption_fy24() -> dict:
+    """Actual auxiliary consumption of the conventional fleet (thermal + hydro
+    + nuclear), FY2023-24, from the CO2 Baseline Database v20.0 Results sheet.
+
+    The sheet carries a 5-year gross & net generation series; aux rate is
+    1 - net/gross for the 2023-24 column. RES is reported net~gross by CEA
+    convention and is excluded from this rate.
+    """
+    path = ROOT / "data/raw/SRC-1/co2-baseline/CO2_Database_Version_20.0_2023_24.xlsx"
+    ws = openpyxl.load_workbook(path, data_only=True)["Results"]
+    years, gross, net = None, None, None
+    for row in ws.iter_rows(values_only=True):
+        cells = [c for c in row if c is not None]
+        if not cells:
+            continue
+        label = str(cells[0])
+        if label.startswith("GENERATION DATA") and years is None:
+            years = [str(c) for c in cells[1:]]
+        elif label.startswith("Gross Generation Total (GWh)"):
+            gross = cells[1:]
+        elif label.startswith("Net Generation Total (GWh)") and net is None:
+            net = cells[1:]  # first occurrence = conventional-only scope
+    if not (years and gross and net):
+        raise ValueError("Results sheet layout changed - generation series not found")
+    idx = years.index("2023-24")
+    g, n = float(gross[idx]), float(net[idx])
+    return {
+        "conventional_gross_GWh": round(g, 1),
+        "conventional_net_GWh": round(n, 1),
+        "aux_rate": round(1 - n / g, 6),
+        "period": "FY2023-24",
+        "source_file": path.relative_to(ROOT).as_posix(),
+    }
+
+
 def per_capita_series() -> list[dict]:
     """Per-capita electricity consumption (kWh), 1947-2024, Growth Book Table 1
     (pdf p10, last numeric column). Basis: utilities + non-utilities."""
