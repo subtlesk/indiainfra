@@ -31,6 +31,6 @@ Then open `site/index.html` via any static server.
 
 ## Status
 
-FY2023-24, national, annual. Stages S1, S4, S5, S7 and the captive bypass are fully populated, S3 and S8 partially (peak met; per-capita), all from parsed primary sources; the rest are shown greyed as "not yet populated" — by design, the dashboard shows what isn't measured instead of hiding it.
+FY2023-24, national, annual. Stages S1, S4, S5, S7 and the captive bypass are fully populated; S0, S3 and S8 partially (45 GW under construction; peak met; per-capita), all from parsed primary sources; the rest are shown greyed as "not yet populated" — by design, the dashboard shows what isn't measured instead of hiding it.
 
 Plus **the long view**: mode-wise installed capacity, gross generation, sector-wise consumption ("who uses it"), and per-capita consumption, 1947→2024, as line charts parsed from CEA's Growth Book historical tables (with CEA's own non-summing early totals published as residuals rather than hidden). S8 is partially populated (per-capita); light theme is default with a visible dark-mode toggle.

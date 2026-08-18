@@ -9,8 +9,22 @@
       "id": "S0",
       "name": "Pipeline",
       "unit": "MW",
-      "status": "pending",
-      "note": "Needs GEM + PARIVESH + CEA Broad Status fusion (fuzzy-match spike first)."
+      "status": "partial",
+      "value": 45137.5,
+      "breakdown": {
+        "thermal": 28400.0,
+        "hydro_large": 16737.5
+      },
+      "grade": "B",
+      "as_of": "thermal 2024-04-30 / hydro 2023-12-31",
+      "source": "SRC-1",
+      "source_file": "data/raw/SRC-1/broad-status/BS_APR_2024.pdf",
+      "metrics": {
+        "thermal_on_hold_MW": 23555.0,
+        "n_units_building": 39,
+        "n_units_on_hold": 53
+      },
+      "note": "Active construction only, thermal (unit-level) + hydro >25 MW. Excludes nuclear and the solar/wind pipeline (GEM/MNRE - next dig) and the full announced->built funnel (needs the fuzzy-match spike)."
     },
     {
       "id": "S1",

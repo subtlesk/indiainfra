@@ -27,6 +27,18 @@ SOURCES = {
                 "url": "https://cea.nic.in/wp-content/uploads/executive/2024/04/Executive_Summary_April_2024.pdf",
                 "path": "data/raw/SRC-1/2024-04/Executive_Summary_April_2024.pdf",
             },
+            # Broad Status Report April 2024 (as on 30.04.2024): unit-level
+            # thermal under-construction (S0), incl. on-hold section 1.3.
+            "broad_status_2024_04": {
+                "url": "https://cea.nic.in/wp-content/uploads/thermal_broad/2024/03/BS_APR_2024.pdf",
+                "path": "data/raw/SRC-1/broad-status/BS_APR_2024.pdf",
+            },
+            # Hydro Project Monitoring annex (as on 31.12.2023): >25 MW hydro
+            # under active construction, sector-wise (S0).
+            "hydro_uc_2023_12": {
+                "url": "https://cea.nic.in/wp-content/uploads/hydro/2024/01/Annex__Sector_wise_31.12.2023.xlsx",
+                "path": "data/raw/SRC-1/hydro/Annex__Sector_wise_31.12.2023.xlsx",
+            },
             # CO2 Baseline Database v20.0 (Dec 2024): station-wise net generation
             # for the conventional fleet + 5-year gross/net series (Results
             # sheet). Source of the ACTUAL FY24 auxiliary-consumption rate.

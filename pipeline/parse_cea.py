@@ -136,6 +136,58 @@ def generation_series() -> list[dict]:
     return rows
 
 
+def thermal_under_construction_fy24() -> dict:
+    """Thermal capacity under construction + on hold, Broad Status Report
+    April 2024 (as on 30.04.2024).
+
+    Section 1.2 sums unit capacities and must equal CEA's printed Grand Total
+    (self-validating). Section 1.3 (on hold / not likely) has no printed total;
+    the unit-sum is labeled parsed-only.
+    """
+    path = ROOT / "data/raw/SRC-1/broad-status/BS_APR_2024.pdf"
+    with pdfplumber.open(path) as pdf:
+        texts = [(p.extract_text() or "") for p in pdf.pages[:12]]
+    uc_page = next(t for t in texts if "1.2 Under Construction Thermal Power Projects" in t)
+    units = [int(c) for c in re.findall(r"U-\d+\s+(\d{3,4})\b", uc_page)]
+    printed = re.search(r"Grand Total\s+(\d{4,6})\b", uc_page)
+    assert printed and sum(units) == int(printed.group(1)), \
+        f"unit sum {sum(units)} != printed grand total {printed and printed.group(1)}"
+    hold_pages = [t for t in texts
+                  if "work is on hold" in t or ("Present Status/Remarks" in t and "Status as on" not in t)]
+    hold_units = [int(c) for c in re.findall(r"U-\d+\s+(\d{2,4})\b", "\n".join(hold_pages))]
+    return {
+        "under_construction_MW": float(sum(units)),
+        "n_units": len(units),
+        "on_hold_MW": float(sum(hold_units)),
+        "n_units_on_hold": len(hold_units),
+        "as_of": "2024-04-30",
+        "source_file": path.relative_to(ROOT).as_posix(),
+    }
+
+
+def hydro_under_construction() -> dict:
+    """Hydro (>25 MW) capacity under active construction, CEA HPM annex as on
+    31.12.2023 (nearest published snapshot to FY24 year-end). Printed sector
+    sub-totals must sum to the printed total."""
+    path = ROOT / "data/raw/SRC-1/hydro/Annex__Sector_wise_31.12.2023.xlsx"
+    ws = openpyxl.load_workbook(path, data_only=True)["Annex-1B"]
+    subs, total = {}, None
+    for row in ws.iter_rows(values_only=True):
+        cells = [c for c in row if c is not None]
+        if not cells:
+            continue
+        label = str(cells[0]).strip()
+        nums = [c for c in cells[1:] if isinstance(c, (int, float))]
+        if label.startswith("Sub-Total:") and nums:
+            subs[label.replace("Sub-Total:", "").strip()] = float(nums[0])
+        elif label.startswith("Total") and nums and total is None:
+            total = float(nums[0])
+    assert total and abs(sum(subs.values()) - total) < 1, f"{subs} vs {total}"
+    return {"under_construction_MW": total, "by_sector": subs,
+            "as_of": "2023-12-31",
+            "source_file": path.relative_to(ROOT).as_posix()}
+
+
 def aux_consumption_fy24() -> dict:
     """Actual auxiliary consumption of the conventional fleet (thermal + hydro
     + nuclear), FY2023-24, from the CO2 Baseline Database v20.0 Results sheet.
