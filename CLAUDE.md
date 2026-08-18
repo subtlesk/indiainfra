@@ -4,7 +4,7 @@
 
 An honest, drill-down dashboard of India's infrastructure, starting with electricity. The structural spine is the **chain specification** ([chain-specification-v0.2.md](chain-specification-v0.2.md), v0.1 kept for history): every headline number sits at a stage, every edge between stages has a name, a kind, a decomposition, and its own data source. The UI reads the chain; it does not hard-code it.
 
-Status: FY2023-24 national annual chain — S1/S4/S5/S7 + captive bypass fully populated, S3/S8 partial (peak met; per-capita), from parsed primary sources; S0/S2/S6 honestly greyed. Long-view time series (capacity, generation, consumption, per-capita, 1947–2024) parsed from the CEA Growth Book.
+Status: FY2023-24 national annual chain — S1/S4/S5/S7 + captive bypass fully populated, S0/S3/S8 partial (under-construction aggregate; peak met; per-capita), from parsed primary sources; S2/S6 honestly greyed. Long-view time series (capacity, generation, consumption, per-capita, 1947–2024) parsed from the CEA Growth Book.
 
 Repository map:
 - `pipeline/` — Python: archive-first fetchers, parsers for archived primary sources, `build.py` (assembles `site/data/chain.json`, enforces invariants; violation fails CI)

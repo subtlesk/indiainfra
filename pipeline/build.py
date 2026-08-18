@@ -26,6 +26,8 @@ def build() -> dict:
     captive = parse_cea.captive_generation_fy24()
     peak = parse_grid_india.peak_demand_met_fy24()
     aux = parse_cea.aux_consumption_fy24()
+    uc_thermal = parse_cea.thermal_under_construction_fy24()
+    uc_hydro = parse_cea.hydro_under_construction()
 
     # S5 identity: conventional gross (Growth-Book basis) x (1 - actual aux
     # rate) + RES (net~gross by CEA convention). Bhutan imports excluded on
@@ -43,8 +45,18 @@ def build() -> dict:
     implied_utilisation = s4["value_GWh"] * 1000 / (s1["value_MW"] * FY24_HOURS)
 
     stages = [
-        {"id": "S0", "name": "Pipeline", "unit": "MW", "status": "pending",
-         "note": "Needs GEM + PARIVESH + CEA Broad Status fusion (fuzzy-match spike first)."},
+        {"id": "S0", "name": "Pipeline", "unit": "MW", "status": "partial",
+         "value": uc_thermal["under_construction_MW"] + uc_hydro["under_construction_MW"],
+         "breakdown": {"thermal": uc_thermal["under_construction_MW"],
+                       "hydro_large": uc_hydro["under_construction_MW"]},
+         "grade": "B",
+         "as_of": f"thermal {uc_thermal['as_of']} / hydro {uc_hydro['as_of']}",
+         "source": "SRC-1",
+         "source_file": uc_thermal["source_file"],
+         "metrics": {"thermal_on_hold_MW": uc_thermal["on_hold_MW"],
+                     "n_units_building": uc_thermal["n_units"],
+                     "n_units_on_hold": uc_thermal["n_units_on_hold"]},
+         "note": "Active construction only, thermal (unit-level) + hydro >25 MW. Excludes nuclear and the solar/wind pipeline (GEM/MNRE - next dig) and the full announced->built funnel (needs the fuzzy-match spike)."},
         {"id": "S1", "name": "Installed capacity", "unit": "MW", "status": "populated",
          "value": s1["value_MW"], "breakdown": s1["breakdown_MW"], "grade": "A",
          "as_of": s1["as_of"], "source": "SRC-1", "source_file": s1["source_file"]},
@@ -176,6 +188,13 @@ def check_invariants(chain: dict) -> list[str]:
         chk = e.get("atc_identity_check")
         if chk and abs(chk["lhs_atc_pct"] - chk["rhs_from_efficiencies_pct"]) > 0.25:
             errors.append(f"AT&C identity broken: {chk}")
+
+    # S0: active construction must be a plausible fraction of installed base.
+    s0 = by_id.get("S0", {})
+    if s0.get("value"):
+        frac = s0["value"] / by_id["S1"]["value"]
+        if not (0.01 < frac < 0.30):
+            errors.append(f"S0 under-construction {s0['value']} MW implausible vs installed ({frac:.1%})")
 
     # S5: aux rate plausibility, cross-source gross agreement, and ordering.
     s5 = by_id.get("S5", {})

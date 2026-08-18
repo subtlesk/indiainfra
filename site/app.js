@@ -10,12 +10,13 @@ const FUEL_COLORS = {
 const FUEL_LABELS = {
   coal: "Coal", coal_lignite: "Coal & lignite", lignite: "Lignite", gas: "Gas",
   diesel: "Diesel", nuclear: "Nuclear", hydro_large: "Hydro", res: "Renewables",
-  res_incl_small_hydro: "Renewables",
+  res_incl_small_hydro: "Renewables", thermal: "Thermal",
 };
+FUEL_COLORS.thermal = "var(--series-2)";
 
 /* UI copy: plain title + one-sentence story per stage. */
 const COPY = {
-  S0: { title: "What's promised", story: "Announced projects queue up for land, loans and clearances. Many never make it — and this page will track how many." },
+  S0: { title: "What's promised", story: "India is physically building about 45 GW of new coal and hydro stations right now — while another 24 GW sits stalled mid-construction, on hold or abandoned. Solar and wind pipelines, and the full announced→built funnel, are still being wired in." },
   S1: { title: "What's built", story: "Every power station connected to the grid — coal to rooftop-scale solar — at the end of March 2024." },
   S2: { title: "What's ready to run", story: "Built isn't always available: maintenance, breakdowns and fuel shortages keep part of the fleet offline every day." },
   S3: { title: "What's called on", story: "Ready plants run only when someone buys their power. The most India called for at once this year was about 240 GW — barely over half of what's built. Some of the rest was broken, resting, or simply unaffordable to buy." },
@@ -34,6 +35,7 @@ function headline(s) {
   if (s.id === "S7") return `${s.metrics.atc_loss_pct.toFixed(1)}%<small>lost</small>`;
   if (s.id === "S8" && s.metrics) return `${fmtIN(s.metrics.per_capita_kwh)}<small>units/person</small>`;
   if (s.id === "S3" && s.metrics) return `${fmtIN(s.metrics.peak_met_MW / 1000)}<small>GW peak</small>`;
+  if (s.id === "S0" && s.value) return `${fmtIN(s.value / 1000)}<small>GW building</small>`;
   return "";
 }
 
@@ -45,6 +47,7 @@ function detailsBlock(s) {
   if (s.metrics && s.metrics.per_capita_kwh) rows.push(["Measured", `per-capita consumption ${fmtIN(s.metrics.per_capita_kwh)} kWh/yr (utilities + non-utilities basis); supply hours & reliability still unmeasured`]);
   if (s.metrics && s.metrics.peak_met_MW) rows.push(["Measured", `maximum demand met ${fmtIN(s.metrics.peak_met_MW)} MW on ${s.metrics.peak_met_on} — demand MET, not demand (unmet shortage excluded)`]);
   if (s.metrics && s.metrics.aux_rate_conventional) rows.push(["Derivation", `conventional gross × (1 − ${(100 * s.metrics.aux_rate_conventional).toFixed(2)}% actual aux, CO₂ Baseline DB v20) + renewables (net≈gross, CEA convention); aux energy ${fmtIN(s.metrics.aux_energy_GWh)} GWh; cross-checked against Growth Book gross within 0.5% in CI`]);
+  if (s.metrics && s.metrics.thermal_on_hold_MW) rows.push(["Also counted", `${fmtIN(s.metrics.thermal_on_hold_MW)} MW of thermal across ${s.metrics.n_units_on_hold} units is on hold / not likely to be commissioned (CEA Broad Status §1.3; parser sum, no printed total) — stalled capacity is excluded from the headline`]);
   if (s.grade) rows.push(["Coverage grade", s.grade + " (published primary series)"]);
   if (s.as_of) rows.push(["As of", s.as_of]);
   if (s.period) rows.push(["Period", s.period]);
