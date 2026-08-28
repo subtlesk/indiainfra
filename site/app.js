@@ -22,7 +22,7 @@ const COPY = {
   S3: { title: "What's called on", story: "Ready plants run only when someone buys their power. The most India called for at once this year was about 240 GW — barely over half of what's built. Some of the rest was broken, resting, or simply unaffordable to buy." },
   S4: { title: "What was generated", story: "All the electricity India's utility power stations actually produced over the year — measured in 'units', the same units your electricity meter counts (1 unit = 1 kWh; a BU is a billion of them)." },
   S5: { title: "…after plants power themselves", story: "Stations run on their own electricity too. In FY2023-24 India's coal, gas, hydro and nuclear fleet used 6.7% of everything it made — about 102 billion units — before any power left the gate." },
-  S6: { title: "What reached the local grid", story: "Crossing the country costs a few percent more, lost as heat in the wires." },
+  S6: { title: "What reached the local grid", story: "Of the ~1,633 billion units that left power stations, about 1,620 billion arrived at the doorstep of local distribution — the difference went to moving power across the country and net trade with neighbours." },
   S7: { title: "What was billed & paid for", story: "Of the power handed to distribution companies, one unit in six is lost in local wires, never billed, or billed but never paid." },
   S8: { title: "What people actually received", story: "Hours of supply, blackouts, voltage — the lived experience. It's the part India measures least." },
 };
@@ -31,7 +31,7 @@ const fmtIN = (n, d = 0) => n.toLocaleString("en-IN", { maximumFractionDigits: d
 
 function headline(s) {
   if (s.id === "S1") return `${fmtIN(s.value / 1000)}<small>GW</small>`;
-  if (s.id === "S4" || s.id === "S5") return `${fmtIN(s.value / 1000)}<small>BU</small>`;
+  if (s.id === "S4" || s.id === "S5" || s.id === "S6") return `${fmtIN(s.value / 1000)}<small>BU</small>`;
   if (s.id === "S7") return `${s.metrics.atc_loss_pct.toFixed(1)}%<small>lost</small>`;
   if (s.id === "S8" && s.metrics) return `${fmtIN(s.metrics.per_capita_kwh)}<small>units/person</small>`;
   if (s.id === "S3" && s.metrics) return `${fmtIN(s.metrics.peak_met_MW / 1000)}<small>GW peak</small>`;
@@ -48,6 +48,7 @@ function detailsBlock(s) {
   if (s.metrics && s.metrics.peak_met_MW) rows.push(["Measured", `maximum demand met ${fmtIN(s.metrics.peak_met_MW)} MW on ${s.metrics.peak_met_on} — demand MET, not demand (unmet shortage excluded)`]);
   if (s.metrics && s.metrics.aux_rate_conventional) rows.push(["Derivation", `conventional gross × (1 − ${(100 * s.metrics.aux_rate_conventional).toFixed(2)}% actual aux, CO₂ Baseline DB v20) + renewables (net≈gross, CEA convention); aux energy ${fmtIN(s.metrics.aux_energy_GWh)} GWh; cross-checked against Growth Book gross within 0.5% in CI`]);
   if (s.metrics && s.metrics.thermal_on_hold_MW) rows.push(["Also counted", `${fmtIN(s.metrics.thermal_on_hold_MW)} MW of thermal across ${s.metrics.n_units_on_hold} units is on hold / not likely to be commissioned (CEA Broad Status §1.3; parser sum, no printed total) — stalled capacity is excluded from the headline`]);
+  if (s.metrics && s.metrics.vs_s5_gap_GWh) rows.push(["Basis & gap", `energy MET at the state periphery (366 daily values summed from 12 Grid-India monthly reports) — a labeled proxy for delivered-to-distribution; ${fmtIN(s.metrics.vs_s5_gap_GWh)} GWh below net generation, bundling inter-state transmission losses + net cross-border trade; decomposition pending the NLDC ISTS-loss series`]);
   if (s.grade) rows.push(["Coverage grade", s.grade + " (published primary series)"]);
   if (s.as_of) rows.push(["As of", s.as_of]);
   if (s.period) rows.push(["Period", s.period]);

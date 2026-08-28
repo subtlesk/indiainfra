@@ -67,12 +67,35 @@ SOURCES = {
         #   POST webapi.grid-india.in/api/v1/file {_source:"grdw", _type:"REPORTS_MONTHLY_REPORT", _fileDate:"2023-24", _month:"03"}
         # Files are served from webcdn.grid-india.in/<FilePath>. Archive: 2012-13 onward.
         "quirks": ["insecure_tls", "retry"],
+        # All 12 FY2023-24 monthly reports are archived (daily national
+        # energy-met and peak-met tables; the March edition also carries the
+        # "All Time Highest" table). Names follow the CDN's own inconsistent
+        # convention (Apr_2023 ... January_2024).
         "files": {
-            # Monthly operational report March 2024 - daily national peak-met and
-            # energy-met tables + "All Time Highest" (FY24 peak demand met).
-            "monthly_2024_03": {
-                "url": "https://webcdn.grid-india.in/files/grdw/uploads/download-manager-files/Monthly_Report_Mar_2024.pdf",
-                "path": "data/raw/SRC-4/monthly/Monthly_Report_Mar_2024.pdf",
+            f"monthly_{name.split('_')[-2]}_{name.split('_')[-1]}": {
+                "url": f"https://webcdn.grid-india.in/files/grdw/uploads/download-manager-files/{name}.pdf",
+                "path": f"data/raw/SRC-4/monthly/{name}.pdf",
+            }
+            for name in [
+                "Monthly_Report_Apr_2023", "Monthly_Report_May_2023",
+                "Monthly_Report_Jun_2023", "Monthly_Report_Jul_2023",
+                "Monthly_Report_Aug_2023", "Monthly_Report_Sep_2023",
+                "Monthly_Report_Oct_2023", "Monthly_Report_Nov_2023",
+                "Monthly_Report_Dec_2023", "Monthly_Report_January_2024",
+                "Monthly_Report_February_2024", "Monthly_Report_Mar_2024",
+            ]
+        },
+    },
+    "SRC-12": {
+        "name": "PIB / MoP statements (and archived snapshots of dead pages)",
+        "quirks": [],
+        "files": {
+            # MoP "Power Sector at a Glance" - frozen since 27/06/2023, page
+            # dropped in the site's Next.js migration. Wayback snapshot kept as
+            # evidence + for its 2009-10..2022-23 requirement/availability table.
+            "powermin_glance_frozen": {
+                "url": "http://web.archive.org/web/20260301072112/https://powermin.gov.in/en/content/power-sector-glance-all-india",
+                "path": "data/raw/SRC-12/powermin_glance_wayback_20260301.html",
             },
         },
     },
