@@ -14,6 +14,73 @@ import pdfplumber
 ROOT = Path(__file__).resolve().parent.parent
 
 
+FY24_MONTH_FILES = [
+    ("2023-04", "Monthly_Report_Apr_2023.pdf", 30),
+    ("2023-05", "Monthly_Report_May_2023.pdf", 31),
+    ("2023-06", "Monthly_Report_Jun_2023.pdf", 30),
+    ("2023-07", "Monthly_Report_Jul_2023.pdf", 31),
+    ("2023-08", "Monthly_Report_Aug_2023.pdf", 31),
+    ("2023-09", "Monthly_Report_Sep_2023.pdf", 30),
+    ("2023-10", "Monthly_Report_Oct_2023.pdf", 31),
+    ("2023-11", "Monthly_Report_Nov_2023.pdf", 30),
+    ("2023-12", "Monthly_Report_Dec_2023.pdf", 31),
+    ("2024-01", "Monthly_Report_January_2024.pdf", 31),
+    ("2024-02", "Monthly_Report_February_2024.pdf", 29),  # 2024 is a leap year
+    ("2024-03", "Monthly_Report_Mar_2024.pdf", 31),
+]
+
+# separator varies across editions: ASCII hyphen, en-dash, unicode hyphens
+_DATE_ROW = re.compile(r"^\s*(\d{1,2})\W[A-Za-z]{3}\W\d{2}\b(.*)$")
+
+
+def _monthly_energy_met(path: Path, expected_days: int) -> float:
+    """Sum the all-India daily TOTAL column (MU) of the 'ENERGY MET AT
+    NATIONAL LEVEL' table in one monthly report."""
+    def date_rows(text):
+        out = {}
+        for line in text.splitlines():
+            m = _DATE_ROW.match(line)
+            if m:
+                nums = re.findall(r"\d+(?:\.\d+)?", m.group(2))
+                if len(nums) >= 6:  # NR WR SR ER NER TOTAL
+                    out[int(m.group(1))] = float(nums[-1])
+        return out
+
+    with pdfplumber.open(path) as pdf:
+        for i, page in enumerate(pdf.pages[:40]):
+            t = page.extract_text() or ""
+            if "ENERGY MET AT NATIONAL LEVEL" not in t:
+                continue
+            rows = date_rows(t)
+            if len(rows) < expected_days and i + 1 < len(pdf.pages):
+                # table may spill onto the next page (no repeated heading)
+                rows.update(date_rows(pdf.pages[i + 1].extract_text() or ""))
+            if not rows:
+                continue
+            assert len(rows) == expected_days, \
+                f"{path.name}: {len(rows)} day rows, expected {expected_days}"
+            total = sum(rows.values())
+            assert 90_000 < total < 170_000, f"{path.name}: monthly total {total} MU implausible"
+            return total
+    raise ValueError(f"energy-met table not found or incomplete in {path.name}")
+
+
+def energy_met_fy24() -> dict:
+    """All-India energy met (MU), FY2023-24 = sum of 366 daily values across
+    the 12 monthly reports. This is energy met at the state periphery -
+    the working proxy for 'delivered to distribution' (basis labeled; it is
+    not a physical transmission-loss measurement)."""
+    monthly, total = {}, 0.0
+    for ym, fname, days in FY24_MONTH_FILES:
+        path = ROOT / "data/raw/SRC-4/monthly" / fname
+        v = _monthly_energy_met(path, days)
+        monthly[ym] = round(v)
+        total += v
+    return {"energy_met_MU": round(total), "monthly_MU": monthly,
+            "period": "FY2023-24",
+            "source_file": "data/raw/SRC-4/monthly/ (12 monthly reports)"}
+
+
 def peak_demand_met_fy24() -> dict:
     """All-India maximum demand met (MW) with date, from the 'All Time Highest'
     table of the Monthly Report for March 2024.

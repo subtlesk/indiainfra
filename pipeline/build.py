@@ -28,6 +28,7 @@ def build() -> dict:
     aux = parse_cea.aux_consumption_fy24()
     uc_thermal = parse_cea.thermal_under_construction_fy24()
     uc_hydro = parse_cea.hydro_under_construction()
+    met = parse_grid_india.energy_met_fy24()
 
     # S5 identity: conventional gross (Growth-Book basis) x (1 - actual aux
     # rate) + RES (net~gross by CEA convention). Bhutan imports excluded on
@@ -76,8 +77,13 @@ def build() -> dict:
          "metrics": {"aux_rate_conventional": aux["aux_rate"],
                      "aux_energy_GWh": round(conv_gross * aux["aux_rate"], 0)},
          "note": "Derived: conventional gross x (1 - actual aux rate from the CO2 Baseline DB) + RES (net~gross, CEA convention). Aux rate is a fleet aggregate - fuel-wise split not published."},
-        {"id": "S6", "name": "Delivered to distribution", "unit": "GWh", "status": "pending",
-         "note": "Needs NLDC applicable-ISTS-loss series; commercial vs physical basis must be labeled."},
+        {"id": "S6", "name": "Delivered to distribution", "unit": "GWh", "status": "partial",
+         "value": float(met["energy_met_MU"]),  # 1 MU == 1 GWh
+         "grade": "B", "period": "FY2023-24", "source": "SRC-4",
+         "source_file": met["source_file"],
+         "metrics": {"vs_s5_gap_GWh": round(s5_value - met["energy_met_MU"], 0),
+                     "monthly_MU": met["monthly_MU"]},
+         "note": "Energy MET at the state periphery (366 daily values summed across 12 Grid-India monthly reports) - the working proxy for 'delivered to distribution'. The gap vs S5 bundles inter-state transmission losses, net cross-border trade and basis differences; decomposition needs the NLDC applicable-ISTS-loss series."},
         {"id": "S7", "name": "Billed & collected", "unit": "%", "status": "populated",
          "metrics": {"atc_loss_pct": atc["atc_loss_pct"],
                      "billing_efficiency_pct": atc["billing_efficiency_pct"],
@@ -188,6 +194,17 @@ def check_invariants(chain: dict) -> list[str]:
         chk = e.get("atc_identity_check")
         if chk and abs(chk["lhs_atc_pct"] - chk["rhs_from_efficiencies_pct"]) > 0.25:
             errors.append(f"AT&C identity broken: {chk}")
+
+    # S6: delivered must sit below net generation, within a plausible margin
+    # (transmission losses + net trade are a few percent, not tens).
+    s6 = by_id.get("S6", {})
+    if s6.get("value"):
+        gap = by_id["S5"]["value"] - s6["value"]
+        if not (0 < gap < by_id["S5"]["value"] * 0.06):
+            errors.append(f"S5->S6 gap {gap} GWh outside 0-6% plausibility band")
+        months = s6["metrics"]["monthly_MU"]
+        if len(months) != 12:
+            errors.append(f"S6 composite has {len(months)} months, expected 12")
 
     # S0: active construction must be a plausible fraction of installed base.
     s0 = by_id.get("S0", {})

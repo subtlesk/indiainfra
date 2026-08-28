@@ -107,8 +107,30 @@
       "id": "S6",
       "name": "Delivered to distribution",
       "unit": "GWh",
-      "status": "pending",
-      "note": "Needs NLDC applicable-ISTS-loss series; commercial vs physical basis must be labeled."
+      "status": "partial",
+      "value": 1619760.0,
+      "grade": "B",
+      "period": "FY2023-24",
+      "source": "SRC-4",
+      "source_file": "data/raw/SRC-4/monthly/ (12 monthly reports)",
+      "metrics": {
+        "vs_s5_gap_GWh": 13093.0,
+        "monthly_MU": {
+          "2023-04": 130557,
+          "2023-05": 135565,
+          "2023-06": 139932,
+          "2023-07": 138998,
+          "2023-08": 151659,
+          "2023-09": 140495,
+          "2023-10": 138947,
+          "2023-11": 119643,
+          "2023-12": 123175,
+          "2024-01": 133835,
+          "2024-02": 127793,
+          "2024-03": 139161
+        }
+      },
+      "note": "Energy MET at the state periphery (366 daily values summed across 12 Grid-India monthly reports) - the working proxy for 'delivered to distribution'. The gap vs S5 bundles inter-state transmission losses, net cross-border trade and basis differences; decomposition needs the NLDC applicable-ISTS-loss series."
     },
     {
       "id": "S7",
